@@ -1,0 +1,71 @@
+/* ========================================================== */
+/* ADMIN CONTROL PANEL & AUTHENTICATION STYLES                */
+/* ========================================================== */
+
+.admin-bar {
+  background: var(--ink); color: var(--paper); padding: 16px 26px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 40px; flex-wrap: wrap; gap: 14px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
+}
+.admin-bar-info { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.admin-bar-info b { font-family: 'JetBrains Mono', monospace; color: var(--highlight); font-size: 15px; }
+
+.modal-card.wide { max-width: 920px; }
+
+/* ADMIN LOGIN BOX */
+.admin-login-box {
+  padding: 10px 0; text-align: left;
+}
+.admin-login-header {
+  text-align: center; margin-bottom: 24px;
+}
+.admin-login-badge {
+  background: var(--ink); color: var(--highlight); width: 48px; height: 48px; border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.admin-login-error {
+  background: #FEE2E2; color: #DC2626; border: 1px solid #FCA5A5; padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; margin-bottom: 16px; font-weight: 500; display: none;
+}
+
+/* ADMIN MODAL TABS & TABLES */
+.admin-modal-header {
+  background: var(--ink); color: var(--paper); padding: 22px 26px; display: flex; align-items: center; justify-content: space-between;
+}
+.admin-tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); padding: 0 24px; background: var(--paper); }
+.tab-btn {
+  padding: 14px 20px; border: none; background: none; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 14px;
+  color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { color: var(--bkash); border-bottom-color: var(--bkash); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.admin-table-wrapper { overflow-x: auto; margin-top: 14px; border: 1px solid var(--border-color); border-radius: 14px; }
+.admin-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
+.admin-table th { background: var(--paper); padding: 14px 16px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--ink-soft); border-bottom: 1px solid var(--border-color); }
+.admin-table td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); }
+.admin-table tr:last-child td { border-bottom: none; }
+.admin-table tr:hover { background: rgba(110, 99, 166, 0.05); }
+
+/* SWITCH TOGGLE */
+.switch-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border-color); }
+.switch-row:last-child { border-bottom: none; }
+.switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; inset: 0; background-color: #CBD5E1; transition: .2s; border-radius: 999px; }
+.slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .2s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--bkash); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* STATS CARDS IN ADMIN */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--paper); border: 1px solid var(--border-color); border-radius: 14px; padding: 18px; }
+.stat-card span { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; text-transform: uppercase; }
+.stat-card b { font-family: 'Space Grotesk', sans-serif; font-size: 26px; display: block; margin-top: 4px; color: var(--ink); }
+
+@media (max-width: 880px) {
+  .admin-bar { flex-direction: column; align-items: flex-start; }
+}

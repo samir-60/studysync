@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySync AI — AI Study Planner & Live bKash Admin Payment System</title>
+<meta name="description" content="StudySync AI helps students plan their academic week using AI. Features live bKash admin payment system with editable bKash merchant info and admin transaction management.">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Modular Stylesheets -->
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/bkash-modal.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/plan-slider.css">
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div id="toastContainer"></div>
+
+<!-- HEADER / NAV -->
+<header>
+  <nav>
+    <div class="logo" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+      <span class="logo-mark"></span>
+      StudySync AI
+    </div>
+    <div class="links">
+      <a href="#problem">Problem</a>
+      <a href="#solution">Solution</a>
+      <a href="#customers">Customers</a>
+      <a href="#app">Study Planner</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#business">Business</a>
+      <a href="javascript:void(0)" onclick="openContactModal()">Contact</a>
+    </div>
+    <div class="nav-right">
+      <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Theme">🌙</button>
+      <span id="userStatusBadge" class="badge free" onclick="activateFreePlan()" style="cursor:pointer;" title="Click to use Free Plan">Free Plan</span>
+      <a href="#pricing" class="btn sm bkash-btn">⚡ Get Premium</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow bkash-eyebrow">Study Planner · Powered by AI</div>
+        <h1>Your chaotic week, <em>quietly</em> rearranged.</h1>
+        <p class="lede">StudySync AI turns your assignments, exams, and project deadlines into an optimized study schedule. Upgrade to Premium instantly via live bKash payment!</p>
+        <div class="hero-cta">
+          <button class="btn bkash-btn" onclick="openBkashCheckout('Monthly Premium', 150)">Get Premium with bKash</button>
+          <button class="btn ghost" onclick="openPlanSlider()">Compare All Plans</button>
+        </div>
+        <div class="hero-stats">
+          <div><b id="statPriceDisplay">৳150</b><span>Monthly Premium</span></div>
+          <div><b id="statActiveSubscribers">0</b><span>Active Subscribers</span></div>
+          <div><b>Instant</b><span>bKash Verification</span></div>
+        </div>
+      </div>
+
+      <!-- Interactive Widget Preview -->
+      <div class="planner-preview">
+        <div class="planner-head">
+          <b>Smart Weekly AI Schedule</b>
+          <span class="pill">Auto-Balanced</span>
+        </div>
+        <div class="planner-grid">
+          <div class="day-col"><span class="day-label">MON</span><div class="task t1">DBMS<br>Quiz</div><div class="slot"></div><div class="slot"></div></div>
+          <div class="day-col"><span class="day-label">TUE</span><div class="slot"></div><div class="task t2">Lab<br>Report</div><div class="slot"></div></div>
+          <div class="day-col"><span class="day-label">WED</span><div class="slot"></div><div class="slot"></div><div class="task t3">Algorithm<br>Prep</div></div>
+          <div class="day-col"><span class="day-label">THU</span><div class="task t4">Midterm<br>Exam</div><div class="slot"></div><div class="slot"></div></div>
+          <div class="day-col"><span class="day-label">FRI</span><div class="slot"></div><div class="slot"></div><div class="task t5">AI<br>Project</div></div>
+          <div class="day-col"><span class="day-label">SAT</span><div class="slot"></div><div class="slot"></div><div class="slot"></div></div>
+        </div>
+        <div class="planner-foot">
+          <span class="dot"></span> Live AI optimization active for your Bangladesh academic schedule
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM SECTION (STICKY NOTES) -->
+  <section id="problem" class="problem">
+    <div class="wrap">
+      <div class="eyebrow">The Problem</div>
+      <h2>Students aren't lazy. Their time is just unmanaged.</h2>
+      <p class="sub">Between classes, coaching, part-time work, and job prep, four things come up again and again — and existing calendar apps were never built to solve them.</p>
+      <div class="notes">
+        <div class="note"><span class="num">01</span>Poor time management — everything feels urgent, nothing feels planned.</div>
+        <div class="note"><span class="num">02</span>Assignments get forgotten until the night before they're due.</div>
+        <div class="note"><span class="num">03</span>Exam stress builds because there's no clear, paced revision plan.</div>
+        <div class="note"><span class="num">04</span>Study and personal life stay out of balance, all semester long.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION SECTION -->
+  <section id="solution">
+    <div class="eyebrow">The Solution</div>
+    <h2 style="font-size:clamp(28px,4vw,38px); max-width:20ch;">One AI planner that adapts to your actual week.</h2>
+    <div class="solution-grid">
+      <div class="feature-list">
+        <div class="feature">
+          <div class="icon">AI</div>
+          <div><h3>Personalized study plans</h3><p>Built from your courses, deadlines, and free time — not a generic template.</p></div>
+        </div>
+        <div class="feature">
+          <div class="icon">⏰</div>
+          <div><h3>Reminders that adjust</h3><p>Nudges shift automatically when a deadline moves or a task runs long.</p></div>
+        </div>
+        <div class="feature">
+          <div class="icon">📈</div>
+          <div><h3>Progress tracking</h3><p>See what's actually done versus planned, subject by subject.</p></div>
+        </div>
+        <div class="feature">
+          <div class="icon">☺</div>
+          <div><h3>Smart recommendations</h3><p>Suggests what to study next based on exam proximity and your pace.</p></div>
+        </div>
+      </div>
+      <div class="quote-card">
+        <p class="serif">"The plan should bend around the student's real life — not the other way around."</p>
+        <div class="attribution"><div class="avatar">SS</div> Design principle behind StudySync AI</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMERS & GAP COMPARISON TABLE SECTION -->
+  <section id="customers">
+    <div class="eyebrow">Who It's For</div>
+    <h2 style="font-size:clamp(28px,4vw,38px); max-width:22ch;">Built for people juggling deadlines, not just calendars.</h2>
+    <div class="segments">
+      <div class="segment"><span class="tag">Segment 01</span><h3>University students</h3></div>
+      <div class="segment"><span class="tag">Segment 02</span><h3>College students</h3></div>
+      <div class="segment"><span class="tag">Segment 03</span><h3>Coaching students</h3></div>
+      <div class="segment"><span class="tag">Segment 04</span><h3>Job seekers</h3></div>
+    </div>
+
+    <!-- Persona -->
+    <div class="persona">
+      <div class="persona-avatar">R</div>
+      <div>
+        <div class="tag" style="font-family:'JetBrains Mono',monospace;color:var(--lavender);font-size:11px;">CUSTOMER PERSONA</div>
+        <h3>Rafi, 21</h3>
+        <div class="role">CSE student · juggling coursework, a side project, and exam prep</div>
+        <p style="margin:0; color:var(--muted); max-width:50ch;">Rafi has five deadlines and no clear order to tackle them in. He doesn't need another calendar — he needs something to tell him what matters today.</p>
+        <div class="persona-tags">
+          <span>Saves time</span><span>Reduces stress</span><span>Personalized AI planning</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature Gap Comparison Table -->
+    <div class="gap-table">
+      <div class="gap-row head"><div>App</div><div>AI-personalized</div><div>Student-focused</div><div>Progress tracking</div></div>
+      <div class="gap-row"><div>Google Calendar</div><div class="no">No</div><div class="no">No</div><div class="no">No</div></div>
+      <div class="gap-row"><div>Notion</div><div class="no">Manual only</div><div class="no">No</div><div class="no">Manual</div></div>
+      <div class="gap-row"><div>MyStudyLife</div><div class="no">No</div><div class="ok">Yes</div><div class="ok">Basic</div></div>
+      <div class="gap-row"><div><b>StudySync AI</b></div><div class="ok">Yes</div><div class="ok">Yes</div><div class="ok">Yes</div></div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE STUDY PLANNER APP WORKSPACE -->
+  <section id="app" class="app-section">
+    <div class="app-container">
+      <div class="app-header">
+        <div class="app-title">
+          <h2>Interactive AI Study Workspace</h2>
+          <p>Create tasks, generate AI weekly plans, and track your study progress.</p>
+        </div>
+        <span id="appLockBadge" class="badge free">Free Mode (Limited)</span>
+      </div>
+
+      <!-- Control Bar -->
+      <div class="planner-controls">
+        <input type="text" id="newTaskTitle" class="input-field" placeholder="Course / Task name (e.g. CSE301 Quiz)..." style="flex:1;">
+        <select id="newTaskDay" class="input-field">
+          <option value="MON">Monday</option>
+          <option value="TUE">Tuesday</option>
+          <option value="WED">Wednesday</option>
+          <option value="THU">Thursday</option>
+          <option value="FRI">Friday</option>
+          <option value="SAT">Saturday</option>
+          <option value="SUN">Sunday</option>
+        </select>
+        <select id="newTaskPriority" class="input-field">
+          <option value="High">🔴 High Priority</option>
+          <option value="Medium" selected>🟡 Medium</option>
+          <option value="Low">🟢 Normal</option>
+        </select>
+        <button class="btn sm bkash-btn" onclick="addNewTask()">+ Add Study Task</button>
+        <button class="btn sm highlight" onclick="generateAISchedule()">🤖 Auto-Plan with AI</button>
+      </div>
+
+      <!-- Locked Banner if Free User -->
+      <div id="lockedBanner" class="locked-banner" style="display:none;">
+        <h3>🔒 Upgrade to Premium to Unlock Full AI Optimization</h3>
+        <p>Free users can store up to 3 tasks. Unlock unlimited AI task planning, automated bKash reminders, and exam revision guides.</p>
+        <button class="btn sm bkash-btn" onclick="openBkashCheckout('Monthly Premium', 150)">Pay ৳150 with bKash</button>
+      </div>
+
+      <!-- Task List Cards -->
+      <div id="taskGrid" class="task-list-grid">
+        <!-- Dynamically injected tasks -->
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING & BKASH PAYMENT SECTION -->
+  <section id="pricing">
+    <div style="text-align: center; max-width: 600px; margin: 0 auto 40px;">
+      <div class="eyebrow bkash-eyebrow">bKash Integrated Pricing</div>
+      <h2 style="font-size: 34px;">Choose Your Plan & Pay via bKash</h2>
+      <p style="color: var(--muted); margin-top: 8px;">Select a plan below to pay instantly using bKash. The admin will verify or auto-approve your transaction ID.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- FREE TIER -->
+      <div class="price-card">
+        <div>
+          <div class="tier-name">Starter</div>
+          <div class="price">৳0 <span>/ forever</span></div>
+          <ul>
+            <li>Up to 3 study tasks</li>
+            <li>Basic weekly timetable view</li>
+            <li>Manual task tracking</li>
+          </ul>
+        </div>
+        <button id="freePlanBtn" class="btn ghost" onclick="openPlanSlider()">Compare All Plans</button>
+      </div>
+
+      <!-- MONTHLY PREMIUM TIER -->
+      <div class="price-card featured">
+        <div class="popular-tag">Most Popular</div>
+        <div>
+          <div class="tier-name">Monthly Premium</div>
+          <div id="cardPriceMonthly" class="price">৳150 <span>/ month</span></div>
+          <ul>
+            <li>Unlimited AI study plans</li>
+            <li>Automated exam revision planner</li>
+            <li>Priority bKash customer support</li>
+            <li>Instant activation</li>
+          </ul>
+        </div>
+        <button class="btn bkash-btn" onclick="openBkashCheckout('Monthly Premium', 150)">
+          Pay ৳150 with bKash
+        </button>
+      </div>
+
+      <!-- QUARTERLY TIER -->
+      <div class="price-card">
+        <div>
+          <div class="tier-name">Semester Pass (3 Mo)</div>
+          <div id="cardPriceQuarterly" class="price">৳400 <span>/ 3 months</span></div>
+          <ul>
+            <li>Everything in Monthly</li>
+            <li>Save ৳50 overall</li>
+            <li>Custom course schedule importer</li>
+          </ul>
+        </div>
+        <button class="btn bkash-btn" onclick="openBkashCheckout('Semester Pass', 400)">
+          Pay ৳400 with bKash
+        </button>
+      </div>
+
+      <!-- ANNUAL VIP TIER -->
+      <div class="price-card">
+        <div>
+          <div class="tier-name">Annual VIP Pass</div>
+          <div id="cardPriceYearly" class="price">৳1200 <span>/ year</span></div>
+          <ul>
+            <li>Full 12 months access</li>
+            <li>1-on-1 AI exam prep coach</li>
+            <li>VIP Priority Admin Support</li>
+          </ul>
+        </div>
+        <button class="btn bkash-btn" onclick="openBkashCheckout('Annual VIP Pass', 1200)">
+          Pay ৳1200 with bKash
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESS & FINANCE SECTION -->
+  <section id="business">
+    <div class="eyebrow">Business & Finance</div>
+    <h2 style="font-size:clamp(28px,4vw,38px); max-width:22ch;">Revenue model, break-even, and how we grow.</h2>
+
+    <div class="breakeven">
+      <div>
+        <div class="be-number"><span>231</span> users</div>
+        <p style="color:var(--muted); font-size:14px; margin-top:8px;">Premium subscribers needed to break even on a ৳30,000 initial investment.</p>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);">Revenue model</div>
+        <div class="persona-tags" style="margin-top:8px;">
+          <span>Subscription</span><span>Freemium</span><span>Educational partnerships</span>
+        </div>
+        <div class="be-track"><div class="be-fill"></div></div>
+        <div class="be-marks"><span>0 users</span><span>Break-even · 231</span><span>Growth →</span></div>
+      </div>
+    </div>
+
+    <!-- Competitor Comparison -->
+    <div class="competitors">
+      <div class="comp-row head"><div>Product</div><div>AI-personalized</div><div>Student-first</div><div>Local pricing</div><div>Reminders</div></div>
+      <div class="comp-row"><div>Google Calendar</div><div>No</div><div>No</div><div>Free only</div><div>Basic</div></div>
+      <div class="comp-row"><div>Notion</div><div>No</div><div>No</div><div>Free / paid</div><div>Manual</div></div>
+      <div class="comp-row"><div>MyStudyLife</div><div>No</div><div>Yes</div><div>Free</div><div>Yes</div></div>
+      <div class="comp-row us"><div><b>StudySync AI</b></div><div><b>Yes</b></div><div><b>Yes</b></div><div><b>৳150/mo</b></div><div><b>Adaptive</b></div></div>
+    </div>
+
+    <!-- Marketing channels -->
+    <div class="eyebrow" style="margin-top:64px;">Marketing Strategy</div>
+    <div class="channels">
+      <div class="channel"><div class="ico">Fb</div>Facebook</div>
+      <div class="channel"><div class="ico">Ig</div>Instagram</div>
+      <div class="channel"><div class="ico">CA</div>Campus ambassadors</div>
+      <div class="channel"><div class="ico">Rf</div>Referral program</div>
+    </div>
+
+    <!-- Future Roadmap -->
+    <div class="eyebrow" style="margin-top:64px;">Future Plans</div>
+    <div class="roadmap">
+      <div class="rm-item"><h3>Bangla AI support</h3><p>Plans and recommendations in Bangla.</p></div>
+      <div class="rm-item"><h3>Voice assistant</h3><p>Plan and check progress hands-free.</p></div>
+      <div class="rm-item"><h3>University portal integration</h3><p>Sync directly with class schedules.</p></div>
+    </div>
+  </section>
+
+  <!-- FEATURES & ABOUT SECTION -->
+  <section id="features" style="border-top: 1px solid var(--paper-line);">
+    <div class="eyebrow">Why Choose StudySync AI</div>
+    <h2 style="font-size: 32px; margin-bottom: 30px;">Built for Bangladeshi Students</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:24px; border-radius:20px;">
+        <h3 style="font-size:18px; margin-bottom:8px;">🇧🇩 Direct bKash Integration</h3>
+        <p style="color:var(--muted); font-size:14px;">No international card required. Pay seamlessly using your personal or agent bKash account in Taka.</p>
+      </div>
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:24px; border-radius:20px;">
+        <h3 style="font-size:18px; margin-bottom:8px;">⚡ Admin Editable Gateway</h3>
+        <p style="color:var(--muted); font-size:14px;">Admin can dynamically update bKash number, instructions, account type (Personal/Merchant), and price tiers anytime.</p>
+      </div>
+      <div style="background:var(--card-bg); border:1px solid var(--border-color); padding:24px; border-radius:20px;">
+        <h3 style="font-size:18px; margin-bottom:8px;">🧠 AI Smart Re-balancing</h3>
+        <p style="color:var(--muted); font-size:14px;">If a quiz gets postponed or lab report runs late, StudySync AI automatically shifts your workload.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" style="border-top: 1px solid var(--paper-line); text-align:center;">
+    <div class="eyebrow">About StudySync AI</div>
+    <h2 style="font-size: 32px; max-width: 600px; margin: 0 auto 16px;">Designed for Busy Students in Bangladesh</h2>
+    <p style="color: var(--muted); max-width: 650px; margin: 0 auto 24px;">StudySync AI combines modern web design with an admin-manageable bKash payment engine, empowering students to study smarter without payment friction.</p>
+    <button class="btn highlight" onclick="openContactModal()">📞 Contact Support Helpline</button>
+  </section>
+
+</main>
+
+<footer style="padding:40px 0; border-top:1px solid var(--border-color); text-align:center; font-size:13px; color:var(--muted);">
+  <div class="wrap" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+    <div>StudySync AI — Student Study Planner Platform</div>
+    <div>
+      <a href="#admin" onclick="openAdminModal()" style="color:var(--muted); text-decoration:underline;">Admin Portal (/admin)</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ========================================== -->
+<!-- bKash CHECKOUT MODAL                       -->
+<!-- ========================================== -->
+<div id="bkashModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="bkash-modal-header">
+      <div class="bkash-logo-title">
+        <span class="bkash-logo-badge">bKash</span>
+        <span>Payment Gateway</span>
+      </div>
+      <button class="modal-close" onclick="closeBkashModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Steps instruction banner based on Admin config -->
+      <div class="bkash-steps-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:12px; font-weight:700; color:var(--bkash); text-transform:uppercase; font-family:'JetBrains Mono',monospace;">
+            Step 1: Send Money / Payment
+          </span>
+          <span id="modalBkashTypeBadge" class="badge bkash">Personal</span>
+        </div>
+
+        <div class="bkash-number-row">
+          <div>
+            <div style="font-size:11px; color:var(--muted); text-transform:uppercase;">Admin bKash Number</div>
+            <div id="modalBkashNumber" class="bkash-number-text">01700-000000</div>
+          </div>
+          <button id="copyBkashBtn" class="copy-btn" onclick="copyBkashNumber()">
+            📋 Copy Number
+          </button>
+        </div>
+
+        <ol id="modalBkashInstructions" class="bkash-instruction-list">
+          <li>Open your bKash Mobile App or dial *247#</li>
+          <li>Select <b>Send Money</b> option</li>
+          <li>Enter the bKash number shown above</li>
+          <li>Enter amount: <b id="modalAmountDisplay">৳150</b></li>
+          <li>Enter reference: <b>STUDYSYNC</b></li>
+          <li>Enter your PIN to complete transfer</li>
+          <li>Copy the 8-10 digit <b>TrxID</b> from the confirmation SMS</li>
+        </ol>
+      </div>
+
+      <!-- Form Submission -->
+      <form id="bkashPaymentForm" onsubmit="handleBkashSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Selected Plan</label>
+          <input type="text" id="checkoutPlanName" class="form-control" readonly style="background:var(--paper); font-weight:600;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Name</label>
+          <input type="text" id="custName" class="form-control" placeholder="e.g. Tanvir Ahmed" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your bKash Phone Number</label>
+          <input type="tel" id="custPhone" class="form-control" placeholder="e.g. 017XXXXXXXX" required pattern="01[3-9][0-9]{8}">
+          <div class="form-hint">The phone number you sent the money from</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">bKash Transaction ID (TrxID)</label>
+          <input type="text" id="custTrxId" class="form-control" placeholder="e.g. 9A8B7C6D5E" required style="font-family:'JetBrains Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:1px;">
+          <div class="form-hint">Enter the 10-character TrxID received from bKash</div>
+        </div>
+
+        <button type="submit" class="btn bkash-btn" style="width:100%; padding:14px; font-size:16px;">
+          ⚡ Confirm bKash Payment
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ADMIN CONTROL PANEL MODAL (AUTH & DASHBOARD)-->
+<!-- ========================================== -->
+<div id="adminModal" class="modal-overlay">
+  <div id="adminModalCard" class="modal-card">
+    <div class="admin-modal-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:20px;">⚙️</span>
+        <div>
+          <h3 style="font-size:18px;">Admin Control Panel</h3>
+          <p style="font-size:11.5px; color:#A1A1AA;">Manage bKash Number, Payments & Gateway Settings</p>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeAdminModal()">✕</button>
+    </div>
+
+    <!-- VIEW 1: ADMIN LOGIN FORM -->
+    <div id="adminLoginView" class="modal-body">
+      <div class="admin-login-box">
+        <div class="admin-login-header">
+          <div class="admin-login-badge">🔑</div>
+          <h3 style="font-size:20px;">Admin Authentication</h3>
+          <p style="font-size:13px; color:var(--muted); margin-top:4px;">Enter your admin credentials to access live bKash settings.</p>
+        </div>
+
+        <div id="adminLoginError" class="admin-login-error"></div>
+
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Admin Email</label>
+            <input type="email" id="adminEmailInput" class="form-control" placeholder="admin@gmail.com" value="admin@gmail.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="adminPassInput" class="form-control" placeholder="••••" value="1234" required>
+          </div>
+
+          <button type="submit" class="btn bkash-btn" style="width:100%; padding:12px; font-size:15px; margin-top:8px;">
+            🔓 Unlock Admin Panel
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- VIEW 2: ADMIN DASHBOARD (AFTER LOGIN) -->
+    <div id="adminDashboardView" style="display:none;">
+      <!-- Admin Tabs & Logout -->
+      <div class="admin-tabs" style="justify-content:space-between; align-items:center;">
+        <div style="display:flex; gap:8px;">
+          <button class="tab-btn active" onclick="switchAdminTab('transactions')">💳 Payment Requests (<span id="adminPendingCount">0</span>)</button>
+          <button class="tab-btn" onclick="switchAdminTab('bkashConfig')">⚙️ Edit bKash Settings</button>
+          <button class="tab-btn" onclick="switchAdminTab('analytics')">📊 Revenue Analytics</button>
+        </div>
+        <button class="btn sm danger" style="margin-right:12px;" onclick="handleAdminLogout()">🔒 Logout Admin</button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- TAB 1: TRANSACTIONS LIST -->
+        <div id="tab-transactions" class="tab-content active">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h4 style="font-size:16px;">Live bKash Payment Submissions</h4>
+            <div style="display:flex; gap:8px;">
+              <button class="btn sm ghost" onclick="filterTransactions('ALL')">All</button>
+              <button class="btn sm ghost" onclick="filterTransactions('PENDING')">Pending</button>
+              <button class="btn sm ghost" onclick="filterTransactions('APPROVED')">Approved</button>
+            </div>
+          </div>
+
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Date/Time</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>Plan</th>
+                  <th>Amount</th>
+                  <th>TrxID</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminTransactionTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 2: EDIT BKASH SETTINGS -->
+        <div id="tab-bkashConfig" class="tab-content">
+          <h4 style="font-size:16px; margin-bottom:16px;">Live Admin bKash Gateway Configuration</h4>
+          <form onsubmit="saveBkashSettings(event)">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="form-group">
+                <label class="form-label">Admin bKash Number</label>
+                <input type="text" id="adminBkashNumberInput" class="form-control" required style="font-family:'JetBrains Mono',monospace; font-weight:700;">
+                <div class="form-hint">Number displayed to customers during checkout</div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">bKash Account Type</label>
+                <select id="adminBkashTypeInput" class="form-control">
+                  <option value="Personal (Send Money)">Personal (Send Money)</option>
+                  <option value="Agent (Cash Out)">Agent (Cash Out)</option>
+                  <option value="Merchant (Payment)">Merchant (Payment)</option>
+                  <option value="Gateway API Direct">Gateway API Direct</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Monthly Premium Price (৳)</label>
+              <input type="number" id="adminPriceInput" class="form-control" value="150" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">bKash Checkout Instructions (One per line)</label>
+              <textarea id="adminInstructionsInput" class="form-control" rows="4" style="font-size:13px;"></textarea>
+            </div>
+
+            <div style="background:var(--paper); border:1px solid var(--border-color); border-radius:14px; padding:18px; margin-bottom:20px;">
+              <div class="switch-row">
+                <div>
+                  <b style="font-size:14px;">Instant Auto-Approval</b>
+                  <p style="font-size:12px; color:var(--muted);">If enabled, valid 10-digit bKash TrxIDs will automatically approve without waiting for manual verification.</p>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="adminAutoApproveToggle">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn bkash-btn" style="width:100%;">
+              💾 Save bKash Gateway Settings
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 3: ANALYTICS -->
+        <div id="tab-analytics" class="tab-content">
+          <h4 style="font-size:16px; margin-bottom:16px;">Revenue & Performance</h4>
+          
+          <div class="stat-grid">
+            <div class="stat-card">
+              <span>Total Collected</span>
+              <b id="statTotalRevenue">৳0</b>
+            </div>
+            <div class="stat-card">
+              <span>Total Orders</span>
+              <b id="statTotalOrders">0</b>
+            </div>
+            <div class="stat-card">
+              <span>Approved Payments</span>
+              <b id="statApprovedOrders">0</b>
+            </div>
+            <div class="stat-card">
+              <span>Pending Approvals</span>
+              <b id="statPendingOrders">0</b>
+            </div>
+          </div>
+
+          <div style="background:var(--paper); border:1px solid var(--border-color); border-radius:14px; padding:20px;">
+            <h5 style="margin-bottom:8px;">bKash Gateway Logs</h5>
+            <p style="font-size:13px; color:var(--muted);">All customer payment actions are logged locally in localStorage state and updated in real-time.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modular Scripts (In Order) -->
+<script src="js/state.js"></script>
+<script src="js/bkash.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/planner.js"></script>
+<script src="js/plan-slider.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

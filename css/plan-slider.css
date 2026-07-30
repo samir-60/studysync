@@ -1,0 +1,232 @@
+/* ============================================== */
+/* PLAN COMPARISON SLIDER MODAL                    */
+/* ============================================== */
+
+.plan-slide-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.65);
+  backdrop-filter: blur(8px);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.plan-slide-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.plan-slide-panel {
+  width: 100%;
+  max-width: 1100px;
+  background: var(--card-bg);
+  border-radius: 28px 28px 0 0;
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  box-shadow: 0 -30px 80px rgba(0, 0, 0, 0.35);
+  transform: translateY(100%);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.plan-slide-overlay.open .plan-slide-panel {
+  transform: translateY(0);
+}
+
+.plan-slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 32px 0;
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 10;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+}
+
+.plan-slide-header .slide-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.plan-slide-header h2 {
+  font-size: 22px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.plan-slide-header p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.plan-slide-close {
+  background: var(--paper);
+  border: 1.5px solid var(--border-color);
+  color: var(--ink);
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.plan-slide-close:hover { background: var(--danger); color: #fff; border-color: var(--danger); transform: rotate(90deg); }
+
+/* ACTIVE PLAN BANNER */
+.active-plan-banner {
+  margin: 20px 32px;
+  background: linear-gradient(135deg, #D6FF4B 0%, #c5f230 100%);
+  color: var(--highlight-ink);
+  border-radius: 16px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+}
+.active-plan-banner .plan-icon {
+  font-size: 22px;
+}
+.active-plan-banner .plan-detail {
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 2px;
+  opacity: 0.75;
+}
+
+/* PLANS GRID */
+.plan-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 24px 32px 32px;
+}
+
+.plan-compare-card {
+  border: 1.5px solid var(--border-color);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s, box-shadow 0.25s;
+  position: relative;
+}
+.plan-compare-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.plan-compare-card.is-free { border-color: #10B981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25); }
+.plan-compare-card.is-premium { border-color: var(--bkash); box-shadow: 0 0 0 2px rgba(209, 32, 83, 0.2); }
+
+.plan-card-top {
+  padding: 20px 18px 16px;
+  background: var(--paper);
+}
+.plan-compare-card.is-free .plan-card-top { background: rgba(16, 185, 129, 0.07); }
+.plan-compare-card.is-premium .plan-card-top { background: rgba(209, 32, 83, 0.05); }
+
+.plan-compare-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.plan-compare-price {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.plan-compare-price span {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.plan-current-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #D1FAE5;
+  color: #065F46;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-top: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.plan-popular-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--bkash-gradient);
+  color: #fff;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.plan-features-list {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+.plan-feat {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.4;
+}
+.plan-feat .feat-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  margin-top: 1px;
+}
+.plan-feat .feat-icon.yes { background: #D1FAE5; color: #059669; }
+.plan-feat .feat-icon.no { background: #F3F4F6; color: #9CA3AF; }
+.plan-feat .feat-icon.limit { background: #FEF3C7; color: #D97706; }
+.plan-feat.locked { color: var(--muted); }
+.plan-feat.locked .feat-text { text-decoration: none; }
+
+.plan-card-cta {
+  padding: 14px 18px;
+  border-top: 1px solid var(--border-color);
+}
+.plan-card-cta button {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .plan-compare-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 520px) {
+  .plan-compare-grid { grid-template-columns: 1fr; }
+  .plan-slide-header, .plan-compare-grid, .active-plan-banner { padding-left: 18px; padding-right: 18px; }
+}

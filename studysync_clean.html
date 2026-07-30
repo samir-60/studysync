@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySync AI — AI Study Planner & bKash Payment</title>
+<meta name="description" content="StudySync AI — AI-powered student study planner with live bKash admin payment system.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================ */
+/* DESIGN SYSTEM                                                 */
+/* ============================================================ */
+:root {
+  --ink: #171833; --ink-soft: #33345a; --paper: #F4F3EE; --paper-line: #DAD8CC;
+  --panel: #FFFFFF; --highlight: #D6FF4B; --highlight-ink: #3a4400;
+  --coral: #FF6A4D; --lavender: #6E63A6; --muted: #6B6B78;
+  --bkash: #D12053; --bkash-dark: #B01242; --bkash-light: #FDE8EF;
+  --bkash-gradient: linear-gradient(135deg,#D12053 0%,#E2136E 100%);
+  --success: #10B981; --warning: #F59E0B; --danger: #EF4444;
+  --radius: 16px; --shadow-sm: 0 4px 14px rgba(23,24,51,.06);
+  --shadow-lg: 0 20px 45px -15px rgba(23,24,51,.18);
+  --shadow-glow: 0 0 25px rgba(209,32,83,.25);
+  --glass-bg: rgba(244,243,238,.92); --card-bg: #FFFFFF; --border-color: #DAD8CC;
+body.dark-mode {
+  --ink: #F3F4F6; --ink-soft: #9CA3AF; --paper: #0F172A; --paper-line: #1E293B;
+  --panel: #1E293B; --muted: #94A3B8; --bkash-light: rgba(209,32,83,.15);
+  --glass-bg: rgba(15,23,42,.92); --card-bg: #1E293B; --border-color: #334155;
+  --highlight-ink: #2a3200;
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background: radial-gradient(circle at 1px 1px,var(--paper-line) 1px,transparent 0) 0 0/28px 28px, var(--paper);
+  color:var(--ink);font-family:'Inter',-apple-system,sans-serif;font-size:15px;line-height:1.6;overflow-x:hidden;
+  transition:background-color .3s ease,color .3s ease;
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+section{padding:80px 0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:16px;font-weight:600}
+.eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--coral);display:inline-block}
+.eyebrow.bkash-eyebrow::before{background:var(--bkash)}
+
+/* BUTTONS */
+.btn{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;padding:11px 22px;border-radius:999px;border:1.5px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(.16,1,.3,1);box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:var(--shadow-lg)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--border-color)}
+.btn.ghost:hover{background:rgba(110,99,166,.1);border-color:var(--lavender)}
+.btn.highlight{background:var(--highlight);color:var(--highlight-ink);border-color:var(--highlight)}
+.btn.highlight:hover{background:#c5f230;box-shadow:0 0 20px rgba(214,255,75,.4)}
+.btn.bkash-btn{background:var(--bkash-gradient);color:#fff;border-color:var(--bkash)}
+.btn.bkash-btn:hover{box-shadow:var(--shadow-glow)}
+.btn.sm{padding:7px 16px;font-size:12.5px}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.success{background:var(--success);border-color:var(--success);color:#fff}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;transition:all .2s}
+.badge.free{background:#E5E7EB;color:#374151}
+.badge.premium{background:#FEF3C7;color:#92400E;border:1px solid #F59E0B;box-shadow:0 0 10px rgba(245,158,11,.2)}
+.badge.bkash{background:var(--bkash-light);color:var(--bkash);border:1px solid rgba(209,32,83,.3)}
+.badge.pending{background:#FEF3C7;color:#D97706}
+.badge.approved{background:#D1FAE5;color:#059669}
+.badge.rejected{background:#FEE2E2;color:#DC2626}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:var(--glass-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border-color);transition:background .3s ease}
+nav{max-width:1180px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;color:var(--ink);cursor:pointer}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--ink);position:relative;flex-shrink:0;transition:transform .3s ease}
+.logo:hover .logo-mark{transform:rotate(12deg) scale(1.1)}
+.logo-mark::after{content:"";position:absolute;inset:7px;background:var(--highlight);border-radius:3px}
+nav .links{display:flex;gap:20px;font-size:14px;color:var(--ink-soft);font-weight:500}
+nav .links a{transition:color .15s ease,transform .15s;display:inline-block}
+nav .links a:hover{color:var(--ink);transform:translateY(-1px)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.theme-toggle-btn{background:transparent;border:1.5px solid var(--border-color);color:var(--ink);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .2s ease}
+.theme-toggle-btn:hover{background:rgba(110,99,166,.15);transform:rotate(18deg)}
+
+/* HERO */
+.hero{padding:64px 0 40px}
+.hero-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center}
+.hero h1{font-size:clamp(38px,4.8vw,56px);line-height:1.06;font-weight:700}
+.hero h1 em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--lavender)}
+.hero p.lede{margin-top:20px;font-size:17px;color:var(--ink-soft);max-width:48ch}
+.hero-cta{display:flex;gap:14px;margin-top:28px;flex-wrap:wrap;align-items:center}
+.hero-stats{display:flex;gap:24px;margin-top:36px;flex-wrap:wrap}
+.hero-stats div{border-left:3.5px solid var(--bkash);padding-left:14px}
+.hero-stats b{display:block;font-family:'Space Grotesk',sans-serif;font-size:22px;color:var(--ink)}
+.hero-stats span{font-size:12px;color:var(--muted)}
+
+/* PLANNER PREVIEW WIDGET */
+.planner-preview{background:var(--card-bg);border-radius:24px;border:1px solid var(--border-color);box-shadow:var(--shadow-lg);padding:24px;transition:transform .3s,box-shadow .3s}
+.planner-preview:hover{transform:translateY(-4px);box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+.planner-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.planner-head b{font-family:'Space Grotesk',sans-serif;font-size:14px}
+.pill{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--highlight);color:var(--highlight-ink);padding:4px 10px;border-radius:999px;font-weight:600}
+.planner-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.day-col{display:flex;flex-direction:column;gap:6px}
+.day-col .day-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-align:center;font-weight:600}
+.slot{height:22px;border-radius:6px;background:var(--paper);border:1px dashed var(--border-color)}
+.task{border-radius:6px;font-size:10px;font-family:'JetBrains Mono',monospace;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 2px;line-height:1.2;font-weight:500;transition:transform .2s}
+.task:hover{transform:scale(1.05)}
+.task.t1{background:var(--lavender)}.task.t2{background:var(--coral)}.task.t3{background:#3a9188}.task.t4{background:var(--ink)}.task.t5{background:var(--bkash)}
+.planner-foot{margin-top:14px;font-size:12px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:#3a9188;display:inline-block;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* PROBLEM SECTION */
+.problem{background:var(--ink);color:var(--paper);border-radius:28px;padding:88px 0;margin:20px 0}
+.problem .eyebrow{color:#c9c8dd}.problem .eyebrow::before{background:var(--highlight)}
+.problem h2{font-size:clamp(30px,4vw,42px);max-width:16ch;margin-bottom:14px}
+.problem p.sub{color:#b7b6cc;max-width:56ch;margin-bottom:52px;font-size:16px}
+.notes{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.note{background:#fff;color:#171833;border-radius:6px;padding:22px 18px 26px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:500;box-shadow:0 18px 34px -18px rgba(0,0,0,.5);transition:transform .2s}
+.note:nth-child(1){transform:rotate(-3deg);background:#fff9de}
+.note:nth-child(2){transform:rotate(2deg);background:#ffe3da}
+.note:nth-child(3){transform:rotate(-2deg);background:#e6f6f4}
+.note:nth-child(4){transform:rotate(3deg);background:#eae7fb}
+.note:hover{transform:rotate(0) translateY(-6px)}
+.note .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);display:block;margin-bottom:10px}
+
+/* SOLUTION */
+.solution-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:start;margin-top:48px}
+.feature-list{display:flex;flex-direction:column;gap:2px}
+.feature{display:grid;grid-template-columns:34px 1fr;gap:16px;padding:22px 0;border-top:1px solid var(--border-color)}
+.feature:last-child{border-bottom:1px solid var(--border-color)}
+.feature .icon{width:34px;height:34px;border-radius:9px;background:var(--lavender);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px}
+.feature h3{font-size:17px;margin-bottom:5px}.feature p{margin:0;color:var(--muted);font-size:14.5px}
+.quote-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:20px;padding:34px;position:sticky;top:100px}
+.quote-card .serif{font-family:'Instrument Serif',serif;font-size:26px;line-height:1.35;color:var(--ink)}
+.quote-card .attribution{margin-top:20px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--highlight);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:var(--highlight-ink)}
+
+/* CUSTOMERS */
+.segments{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+.segment{border:1px solid var(--border-color);border-radius:16px;padding:20px;background:var(--card-bg);font-family:'Space Grotesk',sans-serif}
+.segment .tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--lavender);text-transform:uppercase;letter-spacing:.06em}
+.segment h3{font-size:16px;margin-top:8px}
+.persona{margin-top:60px;display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center;background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:36px}
+.persona-avatar{width:170px;height:170px;border-radius:20px;background:linear-gradient(155deg,var(--lavender),#3a2f6b);display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Instrument Serif',serif;font-size:64px}
+.persona h3{font-size:22px}.persona .role{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);margin:4px 0 16px}
+.persona-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.persona-tags span{font-size:12px;background:var(--paper);border:1px solid var(--border-color);padding:5px 11px;border-radius:999px;font-family:'JetBrains Mono',monospace}
+
+/* GAP TABLE */
+.gap-table{margin-top:56px;border:1px solid var(--border-color);border-radius:20px;overflow:hidden;background:var(--card-bg);box-shadow:var(--shadow-sm)}
+.gap-row{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr}
+.gap-row>div{padding:18px 22px;font-size:14.5px;border-bottom:1px solid var(--border-color);border-right:1px solid var(--border-color);display:flex;align-items:center}
+.gap-row>div:last-child{border-right:none}
+.gap-row.head{background:var(--ink);color:var(--paper);font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px}
+.gap-row.head>div{border-bottom-color:rgba(255,255,255,.1);border-right-color:rgba(255,255,255,.1)}
+.gap-row:last-child>div{border-bottom:none}
+.ok{color:#10B981;font-weight:600}.no{color:var(--coral);font-weight:600}
+
+/* APP WORKSPACE */
+.app-section{background:var(--paper);border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);padding:60px 0}
+.app-container{background:var(--card-bg);border:1px solid var(--border-color);border-radius:24px;padding:28px;box-shadow:var(--shadow-sm)}
+.app-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.app-title h2{font-size:24px}.app-title p{font-size:13.5px;color:var(--muted)}
+.planner-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.input-field{padding:10px 14px;border:1.5px solid var(--border-color);border-radius:12px;font-size:14px;font-family:inherit;outline:none;background:var(--paper);color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.input-field:focus{border-color:var(--lavender);box-shadow:0 0 0 3px rgba(110,99,166,.15)}
+.task-list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:20px}
+.task-card{background:var(--paper);border:1px solid var(--border-color);border-radius:14px;padding:18px;position:relative;transition:transform .2s,border-color .2s,box-shadow .2s}
+.task-card:hover{transform:translateY(-3px);border-color:var(--lavender);box-shadow:var(--shadow-sm)}
+.task-card.completed{opacity:.65;background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3)}
+.task-card .tag-sub{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--lavender);text-transform:uppercase}
+.task-card h4{font-size:16px;margin:6px 0 10px}
+.task-card .meta{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.task-card .btn-check{position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--muted);transition:transform .15s}
+.task-card .btn-check:hover{transform:scale(1.2)}
+.task-card.completed .btn-check{color:var(--success)}
+.locked-banner{background:linear-gradient(135deg,rgba(209,32,83,.06),rgba(209,32,83,.12));border:1.5px dashed var(--bkash);border-radius:18px;padding:28px;text-align:center;margin-top:20px}
+.locked-banner h3{color:var(--bkash);font-size:19px;margin-bottom:8px}
+.locked-banner p{font-size:14px;color:var(--ink-soft);max-width:520px;margin:0 auto 18px}
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:36px}
+.price-card{border-radius:24px;padding:32px;border:1.5px solid var(--border-color);background:var(--card-bg);display:flex;flex-direction:column;justify-content:space-between;position:relative;transition:transform .25s,box-shadow .25s,border-color .25s}
+.price-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--lavender)}
+.price-card.featured{border-color:var(--bkash);background:rgba(209,32,83,.03);box-shadow:0 10px 30px rgba(209,32,83,.1)}
+.price-card .popular-tag{position:absolute;top:-14px;right:24px;background:var(--bkash-gradient);color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:4px 14px;border-radius:999px;text-transform:uppercase}
+.price-card .tier-name{font-family:'JetBrains Mono',monospace;font-size:12.5px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.price-card .price{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;margin:10px 0;color:var(--ink)}
+.price-card .price span{font-size:14px;font-weight:400;color:var(--muted)}
+.price-card ul{list-style:none;margin:20px 0 28px;font-size:14px;display:flex;flex-direction:column;gap:10px}
+.price-card li{display:flex;align-items:center;gap:8px;color:var(--ink-soft)}
+.price-card li::before{content:"✓";color:var(--success);font-weight:700}
+
+/* BUSINESS */
+.breakeven{margin-top:48px;border:1px solid var(--border-color);border-radius:24px;padding:36px;background:var(--card-bg);display:grid;grid-template-columns:1fr 1.3fr;gap:40px;align-items:center}
+.be-number{font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:700;line-height:1}
+.be-number span{color:var(--lavender)}
+.be-track{position:relative;height:12px;background:var(--paper);border-radius:999px;margin-top:26px;border:1px solid var(--border-color)}
+.be-fill{position:absolute;left:0;top:0;bottom:0;width:62%;background:var(--highlight);border-radius:999px}
+.be-marks{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:8px}
+.competitors{margin-top:64px}
+.comp-row{display:grid;grid-template-columns:1.3fr repeat(4,1fr);border-bottom:1px solid var(--border-color);padding:14px 0;align-items:center;font-size:14px}
+.comp-row.head{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.comp-row.us{background:var(--highlight);color:var(--highlight-ink);border-radius:12px;padding:14px 16px;margin:6px 0;font-weight:600}
+.channels{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:44px}
+.channel{border:1px solid var(--border-color);border-radius:16px;padding:22px;text-align:center;background:var(--card-bg);font-weight:600}
+.channel .ico{width:40px;height:40px;border-radius:50%;background:var(--coral);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700}
+.roadmap{margin-top:60px;display:flex;gap:0;position:relative}
+.roadmap::before{content:"";position:absolute;top:19px;left:0;right:0;height:1px;background:var(--border-color)}
+.rm-item{flex:1;position:relative;padding-top:44px;padding-right:20px}
+.rm-item::before{content:"";position:absolute;top:14px;left:0;width:11px;height:11px;border-radius:50%;background:var(--lavender);border:3px solid var(--paper)}
+.rm-item h3{font-size:15px}.rm-item p{font-size:13px;color:var(--muted);margin-top:6px}
+
+/* TOAST */
+#toastContainer{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--ink);color:var(--paper);padding:14px 20px;border-radius:12px;font-size:14px;box-shadow:0 15px 35px rgba(0,0,0,.25);display:flex;align-items:center;gap:12px;pointer-events:auto;animation:toastIn .25s cubic-bezier(.16,1,.3,1) forwards;border-left:4px solid var(--bkash)}
+@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* BKASH MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(15,23,42,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .25s ease}
+.modal-overlay.active{display:flex;opacity:1}
+.modal-card{background:var(--card-bg);color:var(--ink);width:100%;max-width:520px;border-radius:28px;box-shadow:0 25px 60px -15px rgba(0,0,0,.4);overflow:hidden;animation:modalPop .28s cubic-bezier(.16,1,.3,1) forwards;max-height:90vh;display:flex;flex-direction:column;border:1px solid var(--border-color)}
+@keyframes modalPop{from{transform:scale(.92) translateY(16px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.bkash-modal-header{background:var(--bkash-gradient);color:#fff;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 15px rgba(209,32,83,.3)}
+.bkash-logo-title{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700}
+.bkash-logo-badge{background:#fff;color:var(--bkash);font-family:'Space Grotesk',sans-serif;font-weight:800;padding:4px 12px;border-radius:8px;font-size:17px;letter-spacing:-.5px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:background .15s}
+.modal-close:hover{background:rgba(255,255,255,.4);transform:scale(1.05)}
+.modal-body{padding:24px;overflow-y:auto}
+.bkash-steps-box{background:var(--bkash-light);border:1.5px solid rgba(209,32,83,.25);border-radius:16px;padding:18px;margin-bottom:20px}
+.bkash-number-row{display:flex;align-items:center;justify-content:space-between;background:var(--card-bg);border:1.5px solid var(--bkash);border-radius:12px;padding:12px 16px;margin:12px 0 10px;box-shadow:0 4px 12px rgba(209,32,83,.08)}
+.bkash-number-text{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--bkash);letter-spacing:.5px}
+.copy-btn{background:var(--bkash-gradient);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:12.5px;font-family:'Space Grotesk',sans-serif;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.copy-btn:hover{transform:scale(1.04);box-shadow:0 4px 12px rgba(209,32,83,.3)}
+.copy-btn.copied{background:var(--success)}
+.bkash-instruction-list{font-size:13px;color:var(--ink-soft);padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.form-group{margin-bottom:18px}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.form-control{width:100%;padding:12px 16px;border:1.5px solid var(--border-color);border-radius:12px;font-size:14px;font-family:inherit;outline:none;background:var(--paper);color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.form-control:focus{border-color:var(--bkash);box-shadow:0 0 0 3px rgba(209,32,83,.15)}
+.form-hint{font-size:11.5px;color:var(--muted);margin-top:5px}
+
+/* ADMIN */
+.modal-card.wide{max-width:920px}
+.admin-login-box{padding:10px 0;text-align:left}
+.admin-login-header{text-align:center;margin-bottom:24px}
+.admin-login-badge{background:var(--ink);color:var(--highlight);width:48px;height:48px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.admin-login-error{background:#FEE2E2;color:#DC2626;border:1px solid #FCA5A5;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:16px;font-weight:500;display:none}
+.admin-modal-header{background:var(--ink);color:var(--paper);padding:22px 26px;display:flex;align-items:center;justify-content:space-between}
+.admin-tabs{display:flex;gap:8px;border-bottom:1px solid var(--border-color);padding:0 24px;background:var(--paper)}
+.tab-btn{padding:14px 20px;border:none;background:none;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+.tab-btn:hover{color:var(--ink)}.tab-btn.active{color:var(--bkash);border-bottom-color:var(--bkash)}
+.tab-content{display:none}.tab-content.active{display:block}
+.admin-table-wrapper{overflow-x:auto;margin-top:14px;border:1px solid var(--border-color);border-radius:14px}
+.admin-table{width:100%;border-collapse:collapse;text-align:left;font-size:13.5px}
+.admin-table th{background:var(--paper);padding:14px 16px;font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--ink-soft);border-bottom:1px solid var(--border-color)}
+.admin-table td{padding:14px 16px;border-bottom:1px solid var(--border-color)}
+.admin-table tr:last-child td{border-bottom:none}
+.admin-table tr:hover{background:rgba(110,99,166,.05)}
+.switch-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border-color)}
+.switch-row:last-child{border-bottom:none}
+.switch{position:relative;display:inline-block;width:46px;height:26px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;inset:0;background-color:#CBD5E1;transition:.2s;border-radius:999px}
+.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:white;transition:.2s;border-radius:50%}
+input:checked+.slider{background-color:var(--bkash)}
+input:checked+.slider:before{transform:translateX(20px)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.stat-card{background:var(--paper);border:1px solid var(--border-color);border-radius:14px;padding:18px}
+.stat-card span{font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase}
+.stat-card b{font-family:'Space Grotesk',sans-serif;font-size:26px;display:block;margin-top:4px;color:var(--ink)}
+
+/* ===== PLAN COMPARISON SLIDER ===== */
+.plan-slide-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5,5,15,.75);
+  backdrop-filter: blur(10px);
+  z-index: 9000;
+  display: flex !important;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s ease;
+.plan-slide-overlay.open {
+  opacity: 1 !important;
+  pointer-events: all !important;
+.plan-slide-panel {
+  width: 100%;
+  max-width: 1140px;
+  background: var(--card-bg);
+  border-radius: 28px 28px 0 0;
+  border: 1.5px solid var(--border-color);
+  border-bottom: none;
+  box-shadow: 0 -40px 100px rgba(0,0,0,.5);
+  transform: translateY(100%);
+  transition: transform .5s cubic-bezier(.16,1,.3,1);
+  max-height: 88vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+.plan-slide-overlay.open .plan-slide-panel {
+  transform: translateY(0) !important;
+.plan-slide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 26px 32px 20px;
+  position: sticky;
+  top: 0;
+  background: var(--card-bg);
+  z-index: 10;
+  border-bottom: 1.5px solid var(--border-color);
+.plan-slide-header h2 { font-size: 20px; }
+.plan-slide-header p { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.plan-slide-close {
+  background: var(--paper);
+  border: 1.5px solid var(--border-color);
+  color: var(--ink);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+  line-height: 1;
+.plan-slide-close:hover { background: var(--danger); color: #fff; border-color: var(--danger); transform: rotate(90deg); }
+.active-plan-banner {
+  margin: 18px 32px;
+  background: linear-gradient(135deg, #D6FF4B 0%, #b8e620 100%);
+  color: #2a3200;
+  border-radius: 14px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+.active-plan-banner .plan-icon { font-size: 22px; }
+.active-plan-banner .plan-detail { font-size: 12px; font-weight: 400; margin-top: 2px; opacity: .8; }
+/* Plan cards grid */
+.plan-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  padding: 20px 32px 36px;
+.plan-compare-card {
+  border: 1.5px solid var(--border-color);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  transition: transform .25s, box-shadow .25s;
+  position: relative;
+.plan-compare-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,.15); }
+.plan-compare-card.is-free { border-color: #10B981; box-shadow: 0 0 0 2px rgba(16,185,129,.2); }
+.plan-compare-card.is-premium { border-color: var(--bkash); box-shadow: 0 0 0 2px rgba(209,32,83,.15); }
+/* Card tops */
+.plan-card-top { padding: 20px 18px 14px; }
+.plan-compare-card.is-free .plan-card-top { background: rgba(16,185,129,.08); }
+.plan-compare-card.is-premium .plan-card-top { background: rgba(209,32,83,.05); }
+.plan-compare-card:not(.is-free):not(.is-premium) .plan-card-top { background: var(--paper); }
+.plan-compare-name { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 8px; }
+.plan-compare-price { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; color: var(--ink); line-height: 1.1; }
+.plan-compare-price span { font-size: 12px; font-weight: 400; color: var(--muted); }
+.plan-current-tag { display: inline-flex; align-items: center; gap: 5px; background: #D1FAE5; color: #065F46; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 999px; margin-top: 8px; text-transform: uppercase; letter-spacing: .05em; }
+.plan-popular-tag { position: absolute; top: 10px; right: 10px; background: var(--bkash-gradient); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; }
+/* Feature rows */
+.plan-features-list { padding: 14px 16px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+.plan-feat { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--ink-soft); line-height: 1.4; }
+.feat-icon { width: 17px; height: 17px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; margin-top: 1px; }
+.feat-icon.yes { background: #D1FAE5; color: #059669; }
+.feat-icon.no { background: #F1F5F9; color: #94A3B8; }
+.feat-icon.limit { background: #FEF3C7; color: #D97706; }
+.plan-feat.locked { color: var(--muted); opacity: .7; }
+/* CTA area */
+.plan-card-cta { padding: 12px 16px 16px; border-top: 1px solid var(--border-color); }
+.plan-card-cta button { width: 100%; }
+/* Dark mode fixes */
+body.dark-mode .plan-slide-panel { background: #131C2E; border-color: #2D3748; }
+body.dark-mode .plan-slide-header { background: #131C2E; border-color: #2D3748; }
+body.dark-mode .plan-compare-card { background: #1A2236; border-color: #2D3748; }
+body.dark-mode .plan-compare-card.is-free { border-color: #10B981; }
+body.dark-mode .plan-compare-card.is-premium { border-color: var(--bkash); }
+body.dark-mode .plan-card-top { background: #0F172A !important; }
+body.dark-mode .plan-compare-card.is-free .plan-card-top { background: rgba(16,185,129,.12) !important; }
+body.dark-mode .plan-compare-card.is-premium .plan-card-top { background: rgba(209,32,83,.1) !important; }
+body.dark-mode .feat-icon.no { background: #1E293B; color: #64748B; }
+body.dark-mode .plan-card-cta { border-color: #2D3748; }
+body.dark-mode .plan-slide-close { background: #1E293B; border-color: #334155; }
+@media (max-width:900px) { .plan-compare-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width:520px) { .plan-compare-grid { grid-template-columns: 1fr; } .plan-slide-header,.plan-compare-grid,.active-plan-banner { padding-left: 16px; padding-right: 16px; } }
+
+/* FREE PLAN METER */
+.free-plan-meter{background:var(--card-bg);border:1.5px solid var(--border-color);border-radius:16px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.meter-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.meter-bar{flex:1;height:10px;background:var(--paper);border-radius:999px;border:1px solid var(--border-color);min-width:120px;overflow:hidden}
+.meter-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#10B981,#F59E0B);transition:width .5s cubic-bezier(.16,1,.3,1)}
+.meter-fill.full{background:linear-gradient(90deg,var(--bkash),#ff4f8a)}
+.meter-count{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
+
+/* LOCKED FEATURE PREVIEW */
+.premium-preview-section{margin-top:24px}
+.preview-heading{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.preview-heading h3{font-size:16px}
+.preview-lock-tag{background:var(--bkash-light);color:var(--bkash);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid rgba(209,32,83,.3)}
+.locked-preview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.locked-preview-card{border:1.5px dashed var(--border-color);border-radius:14px;padding:18px;position:relative;overflow:hidden;background:var(--paper)}
+.locked-preview-card::after{content:"🔒 PREMIUM";position:absolute;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#fff;letter-spacing:.08em;border-radius:12px;cursor:pointer}
+.locked-preview-card:hover::after{background:rgba(209,32,83,.7);content:"⚡ Upgrade to Unlock"}
+.locked-card-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--muted);margin-bottom:8px}
+.locked-card-item{font-size:12px;color:var(--muted);padding:4px 0;border-bottom:1px solid var(--border-color);display:flex;gap:6px;align-items:center}
+.locked-card-item:last-child{border-bottom:none}
+
+/* AI TEASER MODAL */
+.ai-teaser-overlay{position:fixed;inset:0;background:rgba(5,5,15,.8);backdrop-filter:blur(10px);z-index:8000;display:flex !important;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s ease}
+.ai-teaser-overlay.open{opacity:1;pointer-events:all}
+.ai-teaser-card{background:var(--card-bg);border-radius:24px;width:100%;max-width:620px;overflow:hidden;animation:modalPop .3s cubic-bezier(.16,1,.3,1) forwards;border:1.5px solid var(--border-color);box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.ai-teaser-head{background:linear-gradient(135deg,#1a1240,#2d1b69);padding:24px 28px;color:#fff}
+.ai-teaser-head h3{font-size:19px;margin-bottom:4px}
+.ai-teaser-head p{font-size:13px;opacity:.75}
+.ai-schedule-preview{padding:20px 28px}
+.ai-week-row{display:grid;grid-template-columns:60px 1fr;gap:12px;align-items:center;margin-bottom:10px}
+.ai-day-label{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.ai-task-pill{padding:7px 14px;border-radius:8px;font-size:12.5px;font-weight:600;color:#fff;font-family:'Space Grotesk',sans-serif}
+.ai-task-pill.p1{background:var(--lavender)} .ai-task-pill.p2{background:var(--coral)} .ai-task-pill.p3{background:#3a9188} .ai-task-pill.p4{background:var(--bkash)} .ai-task-pill.p5{background:#2563EB}
+.ai-teaser-blur{position:relative;overflow:hidden}
+.ai-teaser-blur::after{content:"";position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(transparent,var(--card-bg))}
+.ai-teaser-cta{padding:20px 28px;border-top:1px solid var(--border-color);display:flex;gap:12px;align-items:center}
+.ai-upgrade-note{font-size:13px;color:var(--muted);flex:1}
+
+/* UPGRADE NUDGE INLINE */
+.upgrade-nudge{border-radius:16px;padding:20px 22px;margin-top:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;animation:nudgeIn .4s cubic-bezier(.16,1,.3,1)}
+.upgrade-nudge.limit{background:linear-gradient(135deg,rgba(239,68,68,.06),rgba(209,32,83,.1));border:1.5px solid rgba(209,32,83,.3)}
+.upgrade-nudge.ai-nudge{background:linear-gradient(135deg,rgba(110,99,166,.06),rgba(37,99,235,.08));border:1.5px solid rgba(110,99,166,.3)}
+.nudge-icon{font-size:32px;flex-shrink:0}
+.nudge-text h4{font-size:16px;margin-bottom:3px}
+.nudge-text p{font-size:13px;color:var(--muted);margin:0}
+.nudge-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+@keyframes nudgeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* RESPONSIVE */
+@media(max-width:880px){
+  .hero-grid,.solution-grid,.persona,.breakeven{grid-template-columns:1fr}
+  .notes,.segments,.channels{grid-template-columns:repeat(2,1fr)}
+  .comp-row{grid-template-columns:1fr;gap:6px}
+  .roadmap{flex-direction:column}.roadmap::before{display:none}
+  nav .links{display:none}
+  .planner-controls{flex-direction:column;align-items:stretch}
+  .gap-row{grid-template-columns:1fr}
+  .plan-compare-grid{grid-template-columns:repeat(2,1fr)}
+  .locked-preview-grid{grid-template-columns:1fr}
+@media(max-width:520px){
+  .plan-compare-grid{grid-template-columns:1fr}
+  .locked-preview-grid{grid-template-columns:1fr}
+</style>
+</head>
+<body>
+
+<div id="toastContainer"></div>
+
+<!-- HEADER -->
+<header>
+  <nav>
+    <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+      <span class="logo-mark"></span>StudySync AI
+    </div>
+    <div class="links">
+      <a href="#problem">Problem</a>
+      <a href="#solution">Solution</a>
+      <a href="#customers">Customers</a>
+      <a href="#app">Study Planner</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#business">Business</a>
+      <a href="javascript:void(0)" onclick="openContactModal()">Contact</a>
+    </div>
+    <div class="nav-right">
+      <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleDarkMode()" title="Toggle Dark/Light Theme">🌙</button>
+      <span id="userStatusBadge" class="badge free" onclick="openPlanSlider()" style="cursor:pointer;" title="View all plans">Free Plan</span>
+      <button class="btn sm bkash-btn" onclick="openBkashCheckout('Monthly Premium',150)">⚡ Get Premium</button>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow bkash-eyebrow">Study Planner · Powered by AI</div>
+        <h1>Your chaotic week, <em>quietly</em> rearranged.</h1>
+        <p class="lede">StudySync AI turns your assignments, exams, and project deadlines into an optimized study schedule. Upgrade to Premium instantly via live bKash payment!</p>
+        <div class="hero-cta">
+          <button class="btn bkash-btn" onclick="openBkashCheckout('Monthly Premium',150)">Get Premium with bKash</button>
+          <button class="btn ghost" onclick="openPlanSlider()">See All Plans</button>
+        </div>
+        <div class="hero-stats">
+          <div><b id="statPriceDisplay">৳150</b><span>Monthly Premium</span></div>
+          <div><b id="statActiveSubscribers">0</b><span>Active Subscribers</span></div>
+          <div><b>Instant</b><span>bKash Verification</span></div>
+        </div>
+      </div>
+      <div class="planner-preview">
+        <div class="planner-head"><b>Smart Weekly AI Schedule</b><span class="pill">Auto-Balanced</span></div>
+        <div class="planner-grid">
+          <div class="day-col"><span class="day-label">MON</span><div class="task t1">DBMS<br>Quiz</div><div class="slot"></div><div class="slot"></div></div>
+          <div class="day-col"><span class="day-label">TUE</span><div class="slot"></div><div class="task t2">Lab<br>Report</div><div class="slot"></div></div>
+          <div class="day-col"><span class="day-label">WED</span><div class="slot"></div><div class="slot"></div><div class="task t3">Algorithm<br>Prep</div></div>
+          <div class="day-col"><span class="day-label">THU</span><div class="task t4">Midterm<br>Exam</div><div class="slot"></div><div class="slot"></div></div>
+          <div class="day-col"><span class="day-label">FRI</span><div class="slot"></div><div class="slot"></div><div class="task t5">AI<br>Project</div></div>
+          <div class="day-col"><span class="day-label">SAT</span><div class="slot"></div><div class="slot"></div><div class="slot"></div></div>
+        </div>
+        <div class="planner-foot"><span class="dot"></span> Live AI optimization active for your Bangladesh academic schedule</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section id="problem" class="problem">
+    <div class="wrap">
+      <div class="eyebrow">The Problem</div>
+      <h2>Students aren't lazy. Their time is just unmanaged.</h2>
+      <p class="sub">Between classes, coaching, part-time work, and job prep, four things come up again and again — and existing calendar apps were never built to solve them.</p>
+      <div class="notes">
+        <div class="note"><span class="num">01</span>Poor time management — everything feels urgent, nothing feels planned.</div>
+        <div class="note"><span class="num">02</span>Assignments get forgotten until the night before they're due.</div>
+        <div class="note"><span class="num">03</span>Exam stress builds because there's no clear, paced revision plan.</div>
+        <div class="note"><span class="num">04</span>Study and personal life stay out of balance, all semester long.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section id="solution">
+    <div class="eyebrow">The Solution</div>
+    <h2 style="font-size:clamp(28px,4vw,38px);max-width:20ch;">One AI planner that adapts to your actual week.</h2>
+    <div class="solution-grid">
+      <div class="feature-list">
+        <div class="feature"><div class="icon">AI</div><div><h3>Personalized study plans</h3><p>Built from your courses, deadlines, and free time — not a generic template.</p></div></div>
+        <div class="feature"><div class="icon">⏰</div><div><h3>Reminders that adjust</h3><p>Nudges shift automatically when a deadline moves or a task runs long.</p></div></div>
+        <div class="feature"><div class="icon">📈</div><div><h3>Progress tracking</h3><p>See what's actually done versus planned, subject by subject.</p></div></div>
+        <div class="feature"><div class="icon">☺</div><div><h3>Smart recommendations</h3><p>Suggests what to study next based on exam proximity and your pace.</p></div></div>
+      </div>
+      <div class="quote-card">
+        <p class="serif">"The plan should bend around the student's real life — not the other way around."</p>
+        <div class="attribution"><div class="avatar">SS</div> Design principle behind StudySync AI</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMERS -->
+  <section id="customers">
+    <div class="eyebrow">Who It's For</div>
+    <h2 style="font-size:clamp(28px,4vw,38px);max-width:22ch;">Built for people juggling deadlines, not just calendars.</h2>
+    <div class="segments">
+      <div class="segment"><span class="tag">Segment 01</span><h3>University students</h3></div>
+      <div class="segment"><span class="tag">Segment 02</span><h3>College students</h3></div>
+      <div class="segment"><span class="tag">Segment 03</span><h3>Coaching students</h3></div>
+      <div class="segment"><span class="tag">Segment 04</span><h3>Job seekers</h3></div>
+    </div>
+    <div class="persona">
+      <div class="persona-avatar">R</div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;color:var(--lavender);font-size:11px;">CUSTOMER PERSONA</div>
+        <h3>Rafi, 21</h3>
+        <div class="role">CSE student · juggling coursework, a side project, and exam prep</div>
+        <p style="margin:0;color:var(--muted);max-width:50ch;">Rafi has five deadlines and no clear order to tackle them in. He doesn't need another calendar — he needs something to tell him what matters today.</p>
+        <div class="persona-tags"><span>Saves time</span><span>Reduces stress</span><span>Personalized AI planning</span></div>
+      </div>
+    </div>
+    <div class="gap-table">
+      <div class="gap-row head"><div>App</div><div>AI-personalized</div><div>Student-focused</div><div>Progress tracking</div></div>
+      <div class="gap-row"><div>Google Calendar</div><div class="no">No</div><div class="no">No</div><div class="no">No</div></div>
+      <div class="gap-row"><div>Notion</div><div class="no">Manual only</div><div class="no">No</div><div class="no">Manual</div></div>
+      <div class="gap-row"><div>MyStudyLife</div><div class="no">No</div><div class="ok">Yes</div><div class="ok">Basic</div></div>
+      <div class="gap-row"><div><b>StudySync AI</b></div><div class="ok">Yes</div><div class="ok">Yes</div><div class="ok">Yes</div></div>
+    </div>
+  </section>
+
+  <!-- APP WORKSPACE -->
+  <section id="app" class="app-section">
+    <div class="app-container">
+
+      <!-- App Header -->
+      <div class="app-header">
+        <div class="app-title">
+          <h2>Interactive AI Study Workspace</h2>
+          <p>Add your tasks below — and see what AI could do with a full week's schedule.</p>
+        </div>
+        <span id="appLockBadge" class="badge free" onclick="openPlanSlider()" style="cursor:pointer;">Free Mode (Limited)</span>
+      </div>
+
+      <!-- Free Plan Usage Meter -->
+      <div class="free-plan-meter" id="freePlanMeter">
+        <span class="meter-label">📋 Task Slots Used</span>
+        <div class="meter-bar"><div class="meter-fill" id="meterFill" style="width:0%"></div></div>
+        <span class="meter-count" id="meterCount">0 / 3 Free</span>
+        <button class="btn sm ghost" style="font-size:12px;padding:6px 14px;" onclick="openPlanSlider()">View Plans ↗</button>
+      </div>
+
+      <!-- Task Input Controls -->
+      <div class="planner-controls">
+        <input type="text" id="newTaskTitle" class="input-field" placeholder="Course / Task name (e.g. CSE301 Quiz)..." style="flex:1;">
+        <select id="newTaskDay" class="input-field">
+          <option value="MON">Monday</option><option value="TUE">Tuesday</option><option value="WED">Wednesday</option>
+          <option value="THU">Thursday</option><option value="FRI">Friday</option><option value="SAT">Saturday</option><option value="SUN">Sunday</option>
+        </select>
+        <select id="newTaskPriority" class="input-field">
+          <option value="High">🔴 High Priority</option><option value="Medium" selected>🟡 Medium</option><option value="Low">🟢 Normal</option>
+        </select>
+        <button class="btn sm bkash-btn" onclick="addNewTask()">+ Add Study Task</button>
+        <button class="btn sm highlight" onclick="tryAISchedule()">🤖 Auto-Plan with AI</button>
+      </div>
+
+      <!-- Task Grid -->
+      <div id="taskGrid" class="task-list-grid"></div>
+
+      <!-- Dynamic Nudge Area -->
+      <div id="dynamicNudge"></div>
+
+      <!-- Premium Preview (locked features) -->
+      <div class="premium-preview-section" id="premiumPreviewSection">
+        <div class="preview-heading">
+          <h3>🚀 What Premium Unlocks for You</h3>
+          <span class="preview-lock-tag">🔒 Click any card to unlock</span>
+        </div>
+        <div class="locked-preview-grid">
+          <!-- AI Weekly Plan Preview -->
+          <div class="locked-preview-card" onclick="tryAISchedule()">
+            <div class="locked-card-title">🤖 AI Auto-Generated Week</div>
+            <div class="locked-card-item">📅 <span>MON — DBMS Revision (High)</span></div>
+            <div class="locked-card-item">📅 <span>TUE — Algorithm Practice (High)</span></div>
+            <div class="locked-card-item">📅 <span>WED — Lab Report Draft (Med)</span></div>
+            <div class="locked-card-item">📅 <span>THU — Mock Exam Simulation</span></div>
+            <div class="locked-card-item">📅 <span>FRI — Project Proposal Review</span></div>
+          </div>
+          <!-- Exam Revision Planner Preview -->
+          <div class="locked-preview-card" onclick="openPlanSlider()">
+            <div class="locked-card-title">📖 Exam Revision Planner</div>
+            <div class="locked-card-item">✅ <span>Midterm countdown: 6 days left</span></div>
+            <div class="locked-card-item">✅ <span>Suggested: 2 hrs/day on DBMS</span></div>
+            <div class="locked-card-item">✅ <span>Priority: Data Structures Ch.4</span></div>
+            <div class="locked-card-item">✅ <span>Low risk: English — done</span></div>
+            <div class="locked-card-item">✅ <span>Alert: Algorithm not started!</span></div>
+          </div>
+          <!-- Smart Insights Preview -->
+          <div class="locked-preview-card" onclick="openPlanSlider()">
+            <div class="locked-card-title">📊 AI Progress Insights</div>
+            <div class="locked-card-item">📈 <span>Completion rate: 72% this week</span></div>
+            <div class="locked-card-item">⚠️ <span>Most skipped: Thursday tasks</span></div>
+            <div class="locked-card-item">🎯 <span>Best time: 9–11 AM study block</span></div>
+            <div class="locked-card-item">💡 <span>Tip: Revise before 48hr exam gap</span></div>
+            <div class="locked-card-item">🏆 <span>Streak: 4 days consistent study</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AI TEASER MODAL -->
+  <div id="aiTeaserOverlay" class="ai-teaser-overlay" onclick="if(event.target===this)closeAITeaser()">
+    <div class="ai-teaser-card">
+      <div class="ai-teaser-head">
+        <h3>🤖 Here's What AI Would Plan For You</h3>
+        <p>This is a preview of your optimized weekly schedule — unlock it with Premium.</p>
+      </div>
+      <div class="ai-schedule-preview ai-teaser-blur">
+        <div class="ai-week-row"><span class="ai-day-label">MON</span><div class="ai-task-pill p1">DBMS Midterm Revision — 2 hours</div></div>
+        <div class="ai-week-row"><span class="ai-day-label">TUE</span><div class="ai-task-pill p2">Algorithm Lab Report — submit by 5PM</div></div>
+        <div class="ai-week-row"><span class="ai-day-label">WED</span><div class="ai-task-pill p3">Data Structures: Ch.4 + Ch.5</div></div>
+        <div class="ai-week-row"><span class="ai-day-label">THU</span><div class="ai-task-pill p4">Mock Exam Simulation (2.5 hrs)</div></div>
+        <div class="ai-week-row"><span class="ai-day-label">FRI</span><div class="ai-task-pill p5">AI Project Proposal — final draft</div></div>
+        <div class="ai-week-row"><span class="ai-day-label">SAT</span><div class="ai-task-pill p1">Weak topic: Compiler Design review</div></div>
+      </div>
+      <div class="ai-teaser-cta">
+        <p class="ai-upgrade-note">⚡ <b>Unlock this plan + unlimited tasks</b> for just ৳150/month via bKash</p>
+        <button class="btn sm ghost" onclick="closeAITeaser()">Maybe Later</button>
+        <button class="btn sm bkash-btn" onclick="closeAITeaser();openBkashCheckout('Monthly Premium',150)">Pay ৳150 — Unlock Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div style="text-align:center;max-width:600px;margin:0 auto 40px;">
+      <div class="eyebrow bkash-eyebrow">bKash Integrated Pricing</div>
+      <h2 style="font-size:34px;">Choose Your Plan & Pay via bKash</h2>
+      <p style="color:var(--muted);margin-top:8px;">Select a plan below to pay instantly using bKash. The admin will verify or auto-approve your transaction ID.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div><div class="tier-name">Starter</div><div class="price">৳0 <span>/ forever</span></div>
+          <ul><li>Up to 3 study tasks</li><li>Basic weekly timetable view</li><li>Manual task tracking</li></ul>
+        </div>
+        <button class="btn ghost" onclick="openPlanSlider()">View Free Plan Details</button>
+      </div>
+      <div class="price-card featured">
+        <div class="popular-tag">Most Popular</div>
+        <div><div class="tier-name">Monthly Premium</div><div id="cardPriceMonthly" class="price">৳150 <span>/ month</span></div>
+          <ul><li>Unlimited AI study plans</li><li>Automated exam revision planner</li><li>Priority bKash customer support</li><li>Instant activation</li></ul>
+        </div>
+        <button class="btn bkash-btn" onclick="openBkashCheckout('Monthly Premium',150)">Pay ৳150 with bKash</button>
+      </div>
+      <div class="price-card">
+        <div><div class="tier-name">Semester Pass (3 Mo)</div><div id="cardPriceQuarterly" class="price">৳400 <span>/ 3 months</span></div>
+          <ul><li>Everything in Monthly</li><li>Save ৳50 overall</li><li>Custom course schedule importer</li></ul>
+        </div>
+        <button class="btn bkash-btn" onclick="openBkashCheckout('Semester Pass',400)">Pay ৳400 with bKash</button>
+      </div>
+      <div class="price-card">
+        <div><div class="tier-name">Annual VIP Pass</div><div id="cardPriceYearly" class="price">৳1200 <span>/ year</span></div>
+          <ul><li>Full 12 months access</li><li>1-on-1 AI exam prep coach</li><li>VIP Priority Admin Support</li></ul>
+        </div>
+        <button class="btn bkash-btn" onclick="openBkashCheckout('Annual VIP Pass',1200)">Pay ৳1200 with bKash</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESS -->
+  <section id="business">
+    <div class="eyebrow">Business & Finance</div>
+    <h2 style="font-size:clamp(28px,4vw,38px);max-width:22ch;">Revenue model, break-even, and how we grow.</h2>
+    <div class="breakeven">
+      <div>
+        <div class="be-number"><span>231</span> users</div>
+        <p style="color:var(--muted);font-size:14px;margin-top:8px;">Premium subscribers needed to break even on a ৳30,000 initial investment.</p>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);">Revenue model</div>
+        <div class="persona-tags" style="margin-top:8px;"><span>Subscription</span><span>Freemium</span><span>Educational partnerships</span></div>
+        <div class="be-track"><div class="be-fill"></div></div>
+        <div class="be-marks"><span>0 users</span><span>Break-even · 231</span><span>Growth →</span></div>
+      </div>
+    </div>
+    <div class="competitors">
+      <div class="comp-row head"><div>Product</div><div>AI-personalized</div><div>Student-first</div><div>Local pricing</div><div>Reminders</div></div>
+      <div class="comp-row"><div>Google Calendar</div><div>No</div><div>No</div><div>Free only</div><div>Basic</div></div>
+      <div class="comp-row"><div>Notion</div><div>No</div><div>No</div><div>Free / paid</div><div>Manual</div></div>
+      <div class="comp-row"><div>MyStudyLife</div><div>No</div><div>Yes</div><div>Free</div><div>Yes</div></div>
+      <div class="comp-row us"><div><b>StudySync AI</b></div><div><b>Yes</b></div><div><b>Yes</b></div><div><b>৳150/mo</b></div><div><b>Adaptive</b></div></div>
+    </div>
+    <div class="eyebrow" style="margin-top:64px;">Marketing Strategy</div>
+    <div class="channels">
+      <div class="channel"><div class="ico">Fb</div>Facebook</div>
+      <div class="channel"><div class="ico">Ig</div>Instagram</div>
+      <div class="channel"><div class="ico">CA</div>Campus ambassadors</div>
+      <div class="channel"><div class="ico">Rf</div>Referral program</div>
+    </div>
+    <div class="eyebrow" style="margin-top:64px;">Future Plans</div>
+    <div class="roadmap">
+      <div class="rm-item"><h3>Bangla AI support</h3><p>Plans and recommendations in Bangla.</p></div>
+      <div class="rm-item"><h3>Voice assistant</h3><p>Plan and check progress hands-free.</p></div>
+      <div class="rm-item"><h3>University portal integration</h3><p>Sync directly with class schedules.</p></div>
+    </div>
+  </section>
+
+  <section id="about" style="border-top:1px solid var(--paper-line);text-align:center;">
+    <div class="eyebrow">About StudySync AI</div>
+    <h2 style="font-size:32px;max-width:600px;margin:0 auto 16px;">Designed for Busy Students in Bangladesh</h2>
+    <p style="color:var(--muted);max-width:650px;margin:0 auto 24px;">StudySync AI combines modern web design with an admin-manageable bKash payment engine, empowering students to study smarter without payment friction.</p>
+    <button class="btn highlight" onclick="openContactModal()">📞 Contact Support Helpline</button>
+  </section>
+</main>
+
+<footer style="padding:40px 0;border-top:1px solid var(--border-color);text-align:center;font-size:13px;color:var(--muted);">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div>StudySync AI — Student Study Planner Platform</div>
+    <div><a href="#admin" onclick="openAdminModal()" style="color:var(--muted);text-decoration:underline;">Admin Portal (/admin)</a></div>
+  </div>
+</footer>
+
+<!-- ===== PLAN COMPARISON SLIDER ===== -->
+<div id="planSliderOverlay" class="plan-slide-overlay" onclick="if(event.target===this)closePlanSlider()">
+  <div class="plan-slide-panel">
+    <div class="plan-slide-header">
+      <div><h2>📚 Compare All Plans</h2><p style="font-size:13px;color:var(--muted);margin-top:4px;">See exactly what each plan unlocks for your study journey</p></div>
+      <button class="plan-slide-close" onclick="closePlanSlider()">✕</button>
+    </div>
+    <div class="active-plan-banner">
+      <span style="font-size:22px;">🎓</span>
+      <div>
+        <div>You are on the <b id="sliderActivePlanName">Starter (Free) Plan</b></div>
+        <div class="plan-detail" id="sliderActivePlanDetail">Add up to 3 tasks · Upgrade anytime via bKash below</div>
+      </div>
+    </div>
+    <div class="plan-compare-grid">
+      <!-- FREE -->
+      <div class="plan-compare-card is-free">
+        <div class="plan-card-top">
+          <div class="plan-compare-name">Starter</div>
+          <div class="plan-compare-price">৳0 <span>/ forever</span></div>
+          <div class="plan-current-tag" id="freeCurrentTag">✓ Your Current Plan</div>
+        </div>
+        <div class="plan-features-list">
+          <div class="plan-feat"><span class="feat-icon limit">!</span><span>Up to <b>3 study tasks</b> only</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Add, complete & delete tasks</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Choose day & priority level</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Dark/Light mode support</span></div>
+          <div class="plan-feat locked"><span class="feat-icon no">✕</span><span>AI Auto-Plan (locked)</span></div>
+          <div class="plan-feat locked"><span class="feat-icon no">✕</span><span>Unlimited tasks (locked)</span></div>
+          <div class="plan-feat locked"><span class="feat-icon no">✕</span><span>Exam revision planner (locked)</span></div>
+          <div class="plan-feat locked"><span class="feat-icon no">✕</span><span>Priority bKash support (locked)</span></div>
+        </div>
+        <div class="plan-card-cta">
+          <button class="btn ghost" id="freeActivateBtn" onclick="activateFreePlan(); closePlanSlider();">✅ Use Free Plan</button>
+        </div>
+      </div>
+      <!-- MONTHLY -->
+      <div class="plan-compare-card is-premium">
+        <div class="plan-popular-tag">⭐ Most Popular</div>
+        <div class="plan-card-top">
+          <div class="plan-compare-name">Monthly Premium</div>
+          <div class="plan-compare-price">৳150 <span>/ month</span></div>
+        </div>
+        <div class="plan-features-list">
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Unlimited study tasks</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>🤖 AI Auto-Plan scheduling</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Exam revision planner</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Priority bKash support</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Smart deadline balancing</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Progress tracking per subject</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Instant premium activation</span></div>
+          <div class="plan-feat locked"><span class="feat-icon no">✕</span><span>1-on-1 AI coaching (VIP only)</span></div>
+        </div>
+        <div class="plan-card-cta">
+          <button class="btn bkash-btn" onclick="closePlanSlider();openBkashCheckout('Monthly Premium',150)">Pay ৳150 with bKash</button>
+        </div>
+      </div>
+      <!-- SEMESTER -->
+      <div class="plan-compare-card">
+        <div class="plan-card-top">
+          <div class="plan-compare-name">Semester Pass</div>
+          <div class="plan-compare-price">৳400 <span>/ 3 months</span></div>
+        </div>
+        <div class="plan-features-list">
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Unlimited study tasks</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>🤖 AI Auto-Plan scheduling</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Exam revision planner</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Priority bKash support</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Smart deadline balancing</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Custom course schedule importer</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Save ৳50 vs monthly</span></div>
+          <div class="plan-feat locked"><span class="feat-icon no">✕</span><span>1-on-1 AI coaching (VIP only)</span></div>
+        </div>
+        <div class="plan-card-cta">
+          <button class="btn bkash-btn" onclick="closePlanSlider();openBkashCheckout('Semester Pass',400)">Pay ৳400 with bKash</button>
+        </div>
+      </div>
+      <!-- VIP -->
+      <div class="plan-compare-card">
+        <div class="plan-card-top">
+          <div class="plan-compare-name">Annual VIP Pass</div>
+          <div class="plan-compare-price">৳1200 <span>/ year</span></div>
+        </div>
+        <div class="plan-features-list">
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Unlimited study tasks</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>🤖 AI Auto-Plan scheduling</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Exam revision planner</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Priority bKash support</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Smart deadline balancing</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Custom course schedule importer</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>Full 12 months access</span></div>
+          <div class="plan-feat"><span class="feat-icon yes">✓</span><span>1-on-1 AI exam coaching</span></div>
+        </div>
+        <div class="plan-card-cta">
+          <button class="btn bkash-btn" onclick="closePlanSlider();openBkashCheckout('Annual VIP Pass',1200)">Pay ৳1200 with bKash</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== bKASH CHECKOUT MODAL ===== -->
+<div id="bkashModal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="bkash-modal-header">
+      <div class="bkash-logo-title"><span class="bkash-logo-badge">bKash</span><span>Payment Gateway</span></div>
+      <button class="modal-close" onclick="closeBkashModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bkash-steps-box">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;font-weight:700;color:var(--bkash);text-transform:uppercase;font-family:'JetBrains Mono',monospace;">Step 1: Send Money / Payment</span>
+          <span id="modalBkashTypeBadge" class="badge bkash">Personal</span>
+        </div>
+        <div class="bkash-number-row">
+          <div>
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;">Admin bKash Number</div>
+            <div id="modalBkashNumber" class="bkash-number-text">01712345678</div>
+          </div>
+          <button id="copyBkashBtn" class="copy-btn" onclick="copyBkashNumber()">📋 Copy Number</button>
+        </div>
+        <ol id="modalBkashInstructions" class="bkash-instruction-list">
+          <li>Open your bKash Mobile App or dial *247#</li>
+          <li>Select <b>Send Money</b> option</li>
+          <li>Enter the bKash number shown above</li>
+          <li>Enter amount: <b id="modalAmountDisplay">৳150</b></li>
+          <li>Enter reference: <b>STUDYSYNC</b></li>
+          <li>Enter your PIN to complete transfer</li>
+          <li>Copy the 8-10 digit <b>TrxID</b> from the confirmation SMS</li>
+        </ol>
+      </div>
+      <form id="bkashPaymentForm" onsubmit="handleBkashSubmit(event)">
+        <div class="form-group"><label class="form-label">Selected Plan</label><input type="text" id="checkoutPlanName" class="form-control" readonly style="background:var(--paper);font-weight:600;"></div>
+        <div class="form-group"><label class="form-label">Your Name</label><input type="text" id="custName" class="form-control" placeholder="e.g. Tanvir Ahmed" required></div>
+        <div class="form-group">
+          <label class="form-label">Your bKash Phone Number</label>
+          <input type="tel" id="custPhone" class="form-control" placeholder="e.g. 017XXXXXXXX" required pattern="01[3-9][0-9]{8}">
+          <div class="form-hint">The phone number you sent the money from</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">bKash Transaction ID (TrxID)</label>
+          <input type="text" id="custTrxId" class="form-control" placeholder="e.g. 9A8B7C6D5E" required style="font-family:'JetBrains Mono',monospace;font-weight:700;text-transform:uppercase;letter-spacing:1px;">
+          <div class="form-hint">Enter the 10-character TrxID received from bKash</div>
+        </div>
+        <button type="submit" class="btn bkash-btn" style="width:100%;padding:14px;font-size:16px;">⚡ Confirm bKash Payment</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN MODAL ===== -->
+<div id="adminModal" class="modal-overlay">
+  <div id="adminModalCard" class="modal-card">
+    <div class="admin-modal-header">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">⚙️</span>
+        <div><h3 style="font-size:18px;">Admin Control Panel</h3><p style="font-size:11.5px;color:#A1A1AA;">Manage bKash Number, Payments & Gateway Settings</p></div>
+      </div>
+      <button class="modal-close" onclick="closeAdminModal()">✕</button>
+    </div>
+    <div id="adminLoginView" class="modal-body">
+      <div class="admin-login-box">
+        <div class="admin-login-header">
+          <div class="admin-login-badge">🔑</div>
+          <h3 style="font-size:20px;">Admin Authentication</h3>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px;">Enter your admin credentials to access live bKash settings.</p>
+        </div>
+        <div id="adminLoginError" class="admin-login-error"></div>
+        <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+          <div class="form-group"><label class="form-label">Admin Email</label><input type="email" id="adminEmailInput" class="form-control" placeholder="admin@gmail.com" value="admin@gmail.com" required></div>
+          <div class="form-group"><label class="form-label">Password</label><input type="password" id="adminPassInput" class="form-control" placeholder="••••" value="1234" required></div>
+          <button type="submit" class="btn bkash-btn" style="width:100%;padding:12px;font-size:15px;margin-top:8px;">🔓 Unlock Admin Panel</button>
+        </form>
+      </div>
+    </div>
+    <div id="adminDashboardView" style="display:none;">
+      <div class="admin-tabs" style="justify-content:space-between;align-items:center;">
+        <div style="display:flex;gap:8px;">
+          <button class="tab-btn active" onclick="switchAdminTab('transactions')">💳 Payments (<span id="adminPendingCount">0</span>)</button>
+          <button class="tab-btn" onclick="switchAdminTab('bkashConfig')">⚙️ Edit bKash</button>
+          <button class="tab-btn" onclick="switchAdminTab('analytics')">📊 Analytics</button>
+        </div>
+        <button class="btn sm danger" style="margin-right:12px;" onclick="handleAdminLogout()">🔒 Logout</button>
+      </div>
+      <div class="modal-body">
+        <div id="tab-transactions" class="tab-content active">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <h4 style="font-size:16px;">Live bKash Payment Submissions</h4>
+            <div style="display:flex;gap:8px;">
+              <button class="btn sm ghost" onclick="filterTransactions('ALL')">All</button>
+              <button class="btn sm ghost" onclick="filterTransactions('PENDING')">Pending</button>
+              <button class="btn sm ghost" onclick="filterTransactions('APPROVED')">Approved</button>
+            </div>
+          </div>
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead><tr><th>Date</th><th>Customer</th><th>Phone</th><th>Plan</th><th>Amount</th><th>TrxID</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="adminTransactionTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div id="tab-bkashConfig" class="tab-content">
+          <h4 style="font-size:16px;margin-bottom:16px;">Live bKash Gateway Configuration</h4>
+          <form onsubmit="saveBkashSettings(event)">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="form-group"><label class="form-label">Admin bKash Number</label><input type="text" id="adminBkashNumberInput" class="form-control" required style="font-family:'JetBrains Mono',monospace;font-weight:700;"><div class="form-hint">Number shown to customers at checkout</div></div>
+              <div class="form-group"><label class="form-label">bKash Account Type</label><select id="adminBkashTypeInput" class="form-control"><option value="Personal (Send Money)">Personal (Send Money)</option><option value="Agent (Cash Out)">Agent (Cash Out)</option><option value="Merchant (Payment)">Merchant (Payment)</option></select></div>
+            </div>
+            <div class="form-group"><label class="form-label">Monthly Premium Price (৳)</label><input type="number" id="adminPriceInput" class="form-control" value="150" required></div>
+            <div class="form-group"><label class="form-label">Checkout Instructions (one per line)</label><textarea id="adminInstructionsInput" class="form-control" rows="4" style="font-size:13px;"></textarea></div>
+            <div style="background:var(--paper);border:1px solid var(--border-color);border-radius:14px;padding:18px;margin-bottom:20px;">
+              <div class="switch-row">
+                <div><b style="font-size:14px;">Instant Auto-Approval</b><p style="font-size:12px;color:var(--muted);">Valid 10-digit TrxIDs will auto-approve without manual check.</p></div>
+                <label class="switch"><input type="checkbox" id="adminAutoApproveToggle"><span class="slider"></span></label>
+              </div>
+            </div>
+            <button type="submit" class="btn bkash-btn" style="width:100%;">💾 Save bKash Settings</button>
+          </form>
+        </div>
+        <div id="tab-analytics" class="tab-content">
+          <h4 style="font-size:16px;margin-bottom:16px;">Revenue & Performance</h4>
+          <div class="stat-grid">
+            <div class="stat-card"><span>Total Collected</span><b id="statTotalRevenue">৳0</b></div>
+            <div class="stat-card"><span>Total Orders</span><b id="statTotalOrders">0</b></div>
+            <div class="stat-card"><span>Approved</span><b id="statApprovedOrders">0</b></div>
+            <div class="stat-card"><span>Pending</span><b id="statPendingOrders">0</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====================== STATE ======================
+const DEFAULT_CONFIG={bkashNumber:"01712345678",accountType:"Personal (Send Money)",monthlyPrice:150,quarterlyPrice:400,autoApprove:false,instructions:["Open your bKash Mobile App or dial *247#","Select Send Money option","Enter the bKash number shown above","Enter exact plan amount","Enter reference: STUDYSYNC","Enter your PIN to complete transfer","Copy the 10-digit TrxID from the confirmation SMS"]};
+const SAMPLE_TRANSACTIONS=[{id:"TX101",date:"2026-07-29 18:30",customer:"Rafiq Islam",phone:"01711223344",plan:"Monthly Premium",amount:150,trxId:"9A8B7C6D5E",status:"APPROVED"},{id:"TX102",date:"2026-07-29 19:15",customer:"Nadia Jahan",phone:"01855667788",plan:"Semester Pass",amount:400,trxId:"8X7Y6Z5W4V",status:"PENDING"}];
+const INITIAL_TASKS=[{id:1,title:"DBMS Midterm Preparation",day:"MON",priority:"High",completed:false},{id:2,title:"Algorithm Lab Report 3",day:"TUE",priority:"Medium",completed:false},{id:3,title:"AI Project Proposal Draft",day:"FRI",priority:"High",completed:true}];
+let state={config:JSON.parse(localStorage.getItem('study_bkash_config'))||DEFAULT_CONFIG,transactions:JSON.parse(localStorage.getItem('study_transactions'))||SAMPLE_TRANSACTIONS,tasks:JSON.parse(localStorage.getItem('study_tasks'))||INITIAL_TASKS,userSub:JSON.parse(localStorage.getItem('study_user_sub'))||{isPremium:false,plan:"Free Plan",activeTrxId:null},darkMode:localStorage.getItem('study_dark_mode')==='true',isAdminLoggedIn:localStorage.getItem('study_admin_logged_in')==='true',adminCredentials:{email:"admin@gmail.com",password:"1234"},currentCheckoutPlan:null,currentCheckoutAmount:0,transactionFilter:"ALL"};
+function saveState(){localStorage.setItem('study_bkash_config',JSON.stringify(state.config));localStorage.setItem('study_transactions',JSON.stringify(state.transactions));localStorage.setItem('study_tasks',JSON.stringify(state.tasks));localStorage.setItem('study_user_sub',JSON.stringify(state.userSub));localStorage.setItem('study_dark_mode',state.darkMode);localStorage.setItem('study_admin_logged_in',state.isAdminLoggedIn);renderApp();}
+function toggleDarkMode(){state.darkMode=!state.darkMode;saveState();showToast(state.darkMode?'🌙 Dark Mode Activated':'☀️ Light Mode Activated');}
+function applyTheme(){if(state.darkMode){document.body.classList.add('dark-mode');const b=document.getElementById('themeToggleBtn');if(b)b.innerText='☀️';}else{document.body.classList.remove('dark-mode');const b=document.getElementById('themeToggleBtn');if(b)b.innerText='🌙';}}
+function showToast(msg){const c=document.getElementById('toastContainer');if(!c)return;const t=document.createElement('div');t.className='toast';t.innerHTML='<span>🇧🇩</span> <span>'+String(msg)+'</span>';c.appendChild(t);setTimeout(()=>t.remove(),3500);}
+function escapeHtml(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+// ====================== PLAN SLIDER ======================
+function openPlanSlider(){
+  const o=document.getElementById('planSliderOverlay');
+  if(!o) return;
+  const nameEl=document.getElementById('sliderActivePlanName');
+  const detailEl=document.getElementById('sliderActivePlanDetail');
+  const freeTag=document.getElementById('freeCurrentTag');
+  const freeBtn=document.getElementById('freeActivateBtn');
+  if(state.userSub.isPremium){
+    if(nameEl)nameEl.innerText=state.userSub.plan;
+    if(detailEl)detailEl.innerText='Premium active · All features unlocked';
+    if(freeTag)freeTag.style.display='none';
+    if(freeBtn){freeBtn.innerText='Switch to Free Plan';freeBtn.disabled=false;}
+  } else {
+    if(nameEl)nameEl.innerText='Starter (Free) Plan';
+    if(detailEl)detailEl.innerText='Add up to 3 tasks · Upgrade anytime via bKash below';
+    if(freeBtn){freeBtn.innerText='✅ Currently Active';freeBtn.disabled=true;}
+function closePlanSlider(){const o=document.getElementById('planSliderOverlay');if(o)o.classList.remove('open');}
+
+// ====================== AI TEASER ======================
+function tryAISchedule(){
+  if(state.userSub.isPremium){
+    showToast('🤖 AI is reorganizing your study schedule...');
+    setTimeout(()=>{
+      state.tasks=[{id:Date.now()+1,title:'Revise Chapter 4 Data Structures',day:'MON',priority:'High',completed:false},{id:Date.now()+2,title:'Compiler Design Quiz Practice',day:'WED',priority:'High',completed:false},{id:Date.now()+3,title:'Lab Experiment Simulation',day:'FRI',priority:'Medium',completed:false},{id:Date.now()+4,title:'Algorithm Mock Test',day:'TUE',priority:'High',completed:false},{id:Date.now()+5,title:'Project Proposal Final Draft',day:'THU',priority:'Medium',completed:false}];
+      saveState();
+      showToast('✨ AI Schedule generated! 5 tasks optimized.');
+    },800);
+    return;
+  const o=document.getElementById('aiTeaserOverlay');
+  if(o) requestAnimationFrame(()=>o.classList.add('open'));
+function closeAITeaser(){const o=document.getElementById('aiTeaserOverlay');if(o)o.classList.remove('open');}
+
+    if(freeBtn){freeBtn.innerText='✅ Currently Active';freeBtn.disabled=true;}
+
+// ====================== bKASH ======================
+function openBkashCheckout(plan,amount){state.currentCheckoutPlan=plan;state.currentCheckoutAmount=amount;document.getElementById('checkoutPlanName').value=plan+' (৳'+amount+')';document.getElementById('modalAmountDisplay').innerText='৳'+amount;document.getElementById('modalBkashNumber').innerText=state.config.bkashNumber;document.getElementById('modalBkashTypeBadge').innerText=state.config.accountType;const ol=document.getElementById('modalBkashInstructions');if(ol){ol.innerHTML='';state.config.instructions.forEach(i=>{const li=document.createElement('li');li.innerHTML=i.replace('৳150','<b>৳'+amount+'</b>');ol.appendChild(li);});}document.getElementById('bkashModal').classList.add('active');}
+function closeBkashModal(){document.getElementById('bkashModal').classList.remove('active');}
+function copyBkashNumber(){const n=state.config.bkashNumber;navigator.clipboard.writeText(n).catch(()=>{});const b=document.getElementById('copyBkashBtn');if(b){b.innerText='✓ Copied!';b.classList.add('copied');setTimeout(()=>{b.innerText='📋 Copy Number';b.classList.remove('copied');},2000);}showToast('bKash number '+n+' copied!');}
+function handleBkashSubmit(e){e.preventDefault();const name=document.getElementById('custName').value.trim();const phone=document.getElementById('custPhone').value.trim();const trxId=document.getElementById('custTrxId').value.trim().toUpperCase();if(trxId.length<8){showToast('Please enter a valid 8-10 character bKash TrxID!');return;}const status=state.config.autoApprove?'APPROVED':'PENDING';const tx={id:"TX"+Math.floor(10000+Math.random()*90000),date:new Date().toISOString().replace('T',' ').substring(0,16),customer:name,phone:phone,plan:state.currentCheckoutPlan,amount:state.currentCheckoutAmount,trxId:trxId,status:status};state.transactions.unshift(tx);if(status==='APPROVED'){state.userSub={isPremium:true,plan:state.currentCheckoutPlan,activeTrxId:trxId};showToast('🎉 bKash Payment Auto-Approved! Premium Activated!');}else{showToast('📩 Payment submitted! Pending admin verification.');}saveState();closeBkashModal();document.getElementById('bkashPaymentForm').reset();}
+
+// ====================== PLANNER ======================
+function activateFreePlan(){
+  if(!state.userSub.isPremium && state.userSub.plan === 'Free Plan') {
+    showToast('You are already on the Free Plan!');
+    return;
+  state.userSub={isPremium:false,plan:'Free Plan',activeTrxId:null};
+  saveState();
+  showToast('Starter Free Plan Active! You can add up to 3 study tasks.');
+  const s=document.getElementById('app');if(s)s.scrollIntoView({behavior:'smooth'});
+function renderTasks(){const g=document.getElementById('taskGrid');if(!g)return;g.innerHTML='';state.tasks.forEach(t=>{const c=document.createElement('div');c.className='task-card'+(t.completed?' completed':'');c.innerHTML='<button class="btn-check" onclick="toggleTask('+t.id+')">'+(t.completed?'☑':'☐')+'</button><span class="tag-sub">'+t.day+' · '+t.priority+' Priority</span><h4>'+escapeHtml(t.title)+'</h4><div class="meta"><span>Status: '+(t.completed?'Done':'Pending')+'</span><button class="btn sm danger" style="padding:2px 8px;font-size:11px;" onclick="deleteTask('+t.id+')">Delete</button></div>';g.appendChild(c);});}
+function addNewTask(){const ti=document.getElementById('newTaskTitle');const di=document.getElementById('newTaskDay');const pi=document.getElementById('newTaskPriority');const title=ti.value.trim();if(!title){showToast('Please enter a task title!');return;}if(!state.userSub.isPremium&&state.tasks.length>=3){showToast('⚠️ Free limit reached! Upgrade to add more tasks.');openPlanSlider();return;}state.tasks.push({id:Date.now(),title:title,day:di.value,priority:pi.value,completed:false});ti.value='';saveState();showToast('Task "'+title+'" added!');}
+function toggleTask(id){state.tasks=state.tasks.map(t=>t.id===id?{...t,completed:!t.completed}:t);saveState();}
+function deleteTask(id){state.tasks=state.tasks.filter(t=>t.id!==id);saveState();showToast('Task removed.');}
+function generateAISchedule(){if(!state.userSub.isPremium){showToast('AI Auto-Planning requires Premium! Upgrade with bKash to unlock.');openPlanSlider();return;}showToast('🤖 AI is reorganizing your study schedule...');setTimeout(()=>{state.tasks=[{id:Date.now()+1,title:"Revise Chapter 4 Data Structures",day:"MON",priority:"High",completed:false},{id:Date.now()+2,title:"Compiler Design Quiz Practice",day:"WED",priority:"High",completed:false},{id:Date.now()+3,title:"Lab Experiment Simulation",day:"FRI",priority:"Medium",completed:false}];saveState();showToast('✨ AI Schedule generated!');},800);}
+
+// ====================== ADMIN ======================
+function openAdminModal(){const m=document.getElementById('adminModal');if(!m)return;state.isAdminLoggedIn?showAdminDashboard():showAdminLoginForm();m.classList.add('active');}
+function closeAdminModal(){const m=document.getElementById('adminModal');if(m)m.classList.remove('active');}
+function showAdminLoginForm(){document.getElementById('adminLoginView').style.display='block';document.getElementById('adminDashboardView').style.display='none';document.getElementById('adminModalCard').classList.remove('wide');const e=document.getElementById('adminLoginError');if(e)e.style.display='none';}
+function showAdminDashboard(){document.getElementById('adminLoginView').style.display='none';document.getElementById('adminDashboardView').style.display='block';document.getElementById('adminModalCard').classList.add('wide');document.getElementById('adminBkashNumberInput').value=state.config.bkashNumber;document.getElementById('adminBkashTypeInput').value=state.config.accountType;document.getElementById('adminPriceInput').value=state.config.monthlyPrice;document.getElementById('adminInstructionsInput').value=state.config.instructions.join('\n');document.getElementById('adminAutoApproveToggle').checked=state.config.autoApprove;renderAdminPanel();}
+function handleAdminLogin(e){e.preventDefault();const em=document.getElementById('adminEmailInput').value.trim();const pw=document.getElementById('adminPassInput').value.trim();const err=document.getElementById('adminLoginError');if(em===state.adminCredentials.email&&pw===state.adminCredentials.password){state.isAdminLoggedIn=true;saveState();showToast('🔑 Welcome Admin!');showAdminDashboard();document.getElementById('adminLoginForm').reset();}else{if(err){err.style.display='block';err.innerText='❌ Invalid email or password!';}showToast('❌ Incorrect admin credentials!');}}
+function handleAdminLogout(){state.isAdminLoggedIn=false;saveState();showToast('🔒 Admin logged out.');showAdminLoginForm();}
+function switchAdminTab(t){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));if(event&&event.currentTarget)event.currentTarget.classList.add('active');const el=document.getElementById('tab-'+t);if(el)el.classList.add('active');}
+function filterTransactions(f){state.transactionFilter=f;renderAdminPanel();}
+function renderAdminPanel(){if(!state.isAdminLoggedIn)return;const pc=state.transactions.filter(t=>t.status==='PENDING').length;const apc=document.getElementById('adminPendingCount');if(apc)apc.innerText=pc;const tbody=document.getElementById('adminTransactionTableBody');if(tbody){tbody.innerHTML='';let filtered=state.transactions;if(state.transactionFilter==='PENDING')filtered=filtered.filter(t=>t.status==='PENDING');if(state.transactionFilter==='APPROVED')filtered=filtered.filter(t=>t.status==='APPROVED');if(filtered.length===0){tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px;">No transactions found</td></tr>';}else{filtered.forEach(tx=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+tx.date+'</td><td><b>'+escapeHtml(tx.customer)+'</b></td><td><code>'+tx.phone+'</code></td><td>'+tx.plan+'</td><td><b>৳'+tx.amount+'</b></td><td><code style="color:var(--bkash);font-weight:700;">'+tx.trxId+'</code></td><td><span class="badge '+tx.status.toLowerCase()+'">'+tx.status+'</span></td><td>'+(tx.status==='PENDING'?'<button class="btn sm success" onclick="updateTxStatus(\''+tx.id+'\',\'APPROVED\')">Approve</button> <button class="btn sm danger" onclick="updateTxStatus(\''+tx.id+'\',\'REJECTED\')">Reject</button>':'<button class="btn sm ghost" onclick="deleteTx(\''+tx.id+'\')">Delete</button>')+'</td>';tbody.appendChild(tr);});}}const rev=state.transactions.filter(t=>t.status==='APPROVED').reduce((s,t)=>s+t.amount,0);const trv=document.getElementById('statTotalRevenue');if(trv)trv.innerText='৳'+rev;const tot=document.getElementById('statTotalOrders');if(tot)tot.innerText=state.transactions.length;const app=document.getElementById('statApprovedOrders');if(app)app.innerText=state.transactions.filter(t=>t.status==='APPROVED').length;const pen=document.getElementById('statPendingOrders');if(pen)pen.innerText=pc;}
+function updateTxStatus(id,ns){state.transactions=state.transactions.map(t=>t.id===id?{...t,status:ns}:t);const tx=state.transactions.find(t=>t.id===id);if(ns==='APPROVED'&&tx){state.userSub={isPremium:true,plan:tx.plan,activeTrxId:tx.trxId};showToast('Approved! User upgraded to Premium.');}else{showToast('Transaction updated to '+ns);}saveState();}
+function deleteTx(id){state.transactions=state.transactions.filter(t=>t.id!==id);saveState();showToast('Transaction log deleted.');}
+function saveBkashSettings(e){e.preventDefault();const n=document.getElementById('adminBkashNumberInput').value.trim();const ty=document.getElementById('adminBkashTypeInput').value;const p=parseInt(document.getElementById('adminPriceInput').value)||150;const inst=document.getElementById('adminInstructionsInput').value.trim();const aa=document.getElementById('adminAutoApproveToggle').checked;state.config={bkashNumber:n,accountType:ty,monthlyPrice:p,quarterlyPrice:Math.round(p*2.66),autoApprove:aa,instructions:inst?inst.split('\n').filter(i=>i.trim()):DEFAULT_CONFIG.instructions};saveState();showToast('✅ bKash Settings Saved!');closeAdminModal();}
+
+// ====================== APP ======================
+function openContactModal(){showToast('📞 Support Helpline: '+state.config.bkashNumber+' (bKash Line)');}
+
+function updateMeter(){
+  const cnt=state.tasks.length;
+  const max=3;
+  const pct=state.userSub.isPremium?100:Math.min((cnt/max)*100,100);
+  const fill=document.getElementById('meterFill');
+  const count=document.getElementById('meterCount');
+  const meter=document.getElementById('freePlanMeter');
+  if(fill){fill.style.width=pct+'%';fill.classList.toggle('full',cnt>=max&&!state.userSub.isPremium);}
+  if(count)count.innerText=state.userSub.isPremium?'Unlimited (Premium)':cnt+' / '+max+' Free';
+  if(meter)meter.style.display=state.userSub.isPremium?'none':'flex';
+
+function updateDynamicNudge(){
+  const nudge=document.getElementById('dynamicNudge');
+  if(!nudge)return;
+  nudge.innerHTML='';
+  if(state.userSub.isPremium)return;
+  const cnt=state.tasks.length;
+  if(cnt===2){
+    nudge.innerHTML=`<div class="upgrade-nudge ai-nudge">
+      <span class="nudge-icon">🤖</span>
+      <div class="nudge-text"><h4>1 slot left — AI could manage this for you</h4><p>Premium students get unlimited tasks + AI auto-scheduling. Just ৳150/month via bKash.</p></div>
+      <div class="nudge-actions"><button class="btn sm bkash-btn" onclick="tryAISchedule()">See AI Preview</button><button class="btn sm ghost" onclick="openPlanSlider()">Compare Plans</button></div>
+    </div>`;
+  } else if(cnt>=3){
+    nudge.innerHTML=`<div class="upgrade-nudge limit">
+      <span class="nudge-icon">🔒</span>
+      <div class="nudge-text"><h4>Free limit reached (3/3 tasks)</h4><p>You've experienced the basics. Premium removes all limits — unlimited tasks, AI planning, exam revision tracker, and more.</p></div>
+      <div class="nudge-actions"><button class="btn sm bkash-btn" onclick="openBkashCheckout('Monthly Premium',150)">Pay ৳150 with bKash</button><button class="btn sm ghost" onclick="openPlanSlider()">See Plans</button></div>
+    </div>`;
+
+function renderApp(){
+  applyTheme();
+  const pd=document.getElementById('statPriceDisplay');if(pd)pd.innerText='৳'+state.config.monthlyPrice;
+  const mp=document.getElementById('cardPriceMonthly');if(mp)mp.innerHTML='৳'+state.config.monthlyPrice+' <span>/ month</span>';
+  const qp=document.getElementById('cardPriceQuarterly');if(qp)qp.innerHTML='৳'+state.config.quarterlyPrice+' <span>/ 3 months</span>';
+  const yp=document.getElementById('cardPriceYearly');if(yp)yp.innerHTML='৳'+(state.config.monthlyPrice*8)+' <span>/ year</span>';
+  const ac=state.transactions.filter(t=>t.status==='APPROVED').length;
+  const as=document.getElementById('statActiveSubscribers');if(as)as.innerText=ac;
+  const sb=document.getElementById('userStatusBadge');
+  const ab=document.getElementById('appLockBadge');
+  const pp=document.getElementById('premiumPreviewSection');
+  if(state.userSub.isPremium){
+    if(sb){sb.className='badge premium';sb.innerText='✨ Premium ('+state.userSub.plan+')';}
+    if(ab){ab.className='badge premium';ab.innerText='✨ Premium Unlocked';}
+    if(pp)pp.style.display='none';
+  } else {
+    if(sb){sb.className='badge free';sb.innerText='Free Plan';}
+    if(ab){ab.className='badge free';ab.innerText='Free Mode (Limited)';}
+    if(pp)pp.style.display='block';
+  updateMeter();
+  updateDynamicNudge();
+  renderTasks();
+  renderAdminPanel();
+function checkHashRoute(){const h=window.location.hash;if(h==='#admin'||h==='#/admin')openAdminModal();}
+document.addEventListener('DOMContentLoaded',()=>{renderApp();checkHashRoute();});
+window.addEventListener('hashchange',checkHashRoute);
+</script>
+</body>
+</html>
